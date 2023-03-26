@@ -1,0 +1,19 @@
+general:
+  stata_exec: 'stata-mp'
+
+final_data:
+  COVERAGE_FILE: 'final/data_coverage.pkl' # Figure 1, Table 1
+  DECOMPOSED_FIN_FILE: 'final/country_quarter_decomposed_fin.pkl' # Figures 2 and 3
+  DECOMPOSED_HQ_FILE: 'final/country_quarter_decomposed_hq.pkl' # Figure 4
+  COUNTRYQUARTER_FILE: 'final/analysis_CountryQuarter.dta' # Figures 5, 6, Tables 4, 5, 8, 9, 10
+  FIRMCOUNTRY_FILE: 'final/analysis_FirmCountry.dta' # Tables 3, 4
+  TRANSMISSIONRISK_TAU_FILE: 'final/transmissionrisk_OriginDestinationTau.dta' # Figures 7 and 8, Table 7
+  TRANSMISSIONRISK_FILE: 'final/transmissionrisk_OriginDestination.dta' # Table 6
+  TRANSMISSIONRISK_FIRM_TAU_FILE: 'final/transmissionrisk_OriginFirmTau.dta' # Table 7
+  WORLDSCOPE_FILE: 'temp/worldscope_FirmYearCountry.dta' # Table 1
+  GDP_FILE: 'temp/worldbank_gdp_2019.csv' # Table 1
+  TFIDF_GR_FILE: 'eiu/gr_tfidf.csv' # Table 2
+  TFIDF_JP_FILE: 'eiu/jp_tfidf.csv' # Table 2
+  TFIDF_TR_FILE: 'eiu/tr_tfidf.csv' # Table 2
+
+clean_data:

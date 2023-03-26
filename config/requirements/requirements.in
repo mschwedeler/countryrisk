@@ -1,0 +1,9 @@
+eikon
+ipykernel
+matplotlib
+numpy
+pandas
+pyyaml
+sqlalchemy<2 # otherwise wrds breaks
+statsmodels
+wrds

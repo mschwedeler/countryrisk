@@ -1,0 +1,685 @@
+\documentclass[12pt,oneside,leqno]{article}
+
+\usepackage{amssymb,amsmath,amsfonts}
+\usepackage{dsfont}
+\usepackage{rotating,bigstrut}
+\usepackage{verbatim}
+\usepackage{caption}
+\usepackage{color,soul}
+\usepackage[tiny,center]{titlesec}
+\usepackage{footnote}
+\usepackage{tabularx, booktabs}
+\usepackage{bbm}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{subcaption}
+\usepackage[table, dvipsnames]{xcolor}
+\usepackage[authoryear]{natbib}
+\usepackage[flushleft]{threeparttable}
+\usepackage{multirow}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{comment}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage{mwe}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage[titletoc]{appendix}
+\usepackage{tcolorbox}
+
+\setlength{\paperwidth}{8.5in} \setlength{\paperheight}{11in} \setlength{\textwidth}{6.5in} \setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{0in} \setlength{\evensidemargin}{0in} \setlength{\topmargin}{0in}
+\setlength{\headheight}{0in} \setlength{\headsep}{0in}
+
+\titlelabel{\thetitle.\quad}
+\titleformat*{\section}{\center\scshape}
+\titleformat*{\subsection}{\center\itshape }
+\titleformat*{\subsubsection}{\itshape }
+
+\newtheorem{assume}{Assumption}
+\newtheorem{prop}{Proposition}
+
+\newcommand\fnote[1]{\captionsetup{font=small}\caption*{#1}}
+%\renewcommand{\arraystretch}{1.25}
+\DeclareMathOperator*{\E}{\mathbb{E}}
+\newcommand{\Lagr}{\mathcal{L}}
+
+\makeatletter
+\makeatother
+\titlespacing{\subsubsection}{0pt}{\parskip}{-\parskip}
+
+\let\oldFootnote\footnote
+\newcommand\nextToken\relax
+
+\renewcommand\footnote[1]{%
+\oldFootnote{#1}\futurelet\nextToken\isFootnote}
+
+\newcommand\isFootnote{%
+\ifx\footnote\nextToken\textsuperscript{,}\fi}
+
+% fix input command
+\makeatletter
+\AddToHook{env/tabular/begin}{\let\input\@@input}
+\makeatother
+
+
+
+\title{\Large \bf Sources and Transmission of Country Risk\thanks{For excellent research assistance, we thank Nanyu Chen, Angus Lewis, Meha Sadasivam, and George Vojta. We are grateful to seminar participants at the AEA annual meeting, the Bank of Canada, the NBER Summer Institute, the Macro Finance Society, the Chicago International Finance and Macro Conference, Hoover, Boston University, Columbia University, Princeton University, University of Geneva, University of British Columbia, University of Maryland, University of Virginia, University of Wisconsin. In particular, we thank Tom Ferguson, Pia Malaney, Geert Bekaert, Karen Lewis, Matteo Maggiori, Chris Moser, Fernanda Nechio, Tommaso Porzio, Laura Veldkamp, Frank Warnock, Shang-Jin Wei, and Chenzi Xu for their comments. Tahoun sincerely appreciates continued support from the Institute for New Economic Thinking (INET). Schreger thanks the Jerome A. Chazen Institute for Global Business at Columbia Business School for financial support. The data in this paper are publicly available at \url{www.country-risk.net}.}\bigskip}
+
+\author{
+{\Large Tarek A. Hassan}\thanks{\textbf{Boston University}, NBER, and CEPR;
+Postal Address: 270 Bay State Road, Boston, MA 02215, USA; E-mail:
+thassan@bu.edu.}\\
+{\Large Jesse Schreger}\thanks{\textbf{Columbia University}, NBER and CEPR; Postal Address: 665 West 130th Street, New York, NY 10027; E-mail: jesse.schreger@columbia.edu.}
+\and {\Large Markus Schwedeler}\thanks{\textbf{Boston University}; Postal Address: 270 Bay State Road, Boston, MA 02215, USA; E-mail:
+mschwed@bu.edu.}\\
+{\Large Ahmed Tahoun}\thanks{\textbf{%
+London Business School}; Postal Address: Regent's Park, London NW1 4SA,
+United Kingdom; E-mail: atahoun@london.edu.}
+}
+
+\date{{\Large February 2023}}
+
+
+
+
+\begin{document}
+
+\begin{table}[!h]
+\caption{Sample selection of firms with earnings calls}\label{tab:coverage}
+\medskip
+\centering
+\scalebox{.76}{
+\begin{threeparttable}
+\begin{tabular}{lccccc}
+\toprule
+\input{tables/Table1_coverage.tex}
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\item {\scriptsize Notes: This table shows for the 45 countries for which we have text-based measures of country exposure, risk, and sentiment, the number of firms in our data (column 2), the number of firms that report part of their sales to the country (column 3), the share in 2019 world GDP (column 4), the number of firms in our data in 2019 (column 5), and the percentage of all Compustat's firms' market capitalization by firms in our sample (column 6). The last row shows the sum for columns 2-5, and the mean for column 6.  Firms in our sample are all firms for which we have earnings calls between 2002 and 2019; sales link is taken from Worldscope and defined as the number of firms that report part of their sales to the country at any point between 2002-2017; GDP is the real GDP (constant 2015, USD) from the World Bank (indicator \texttt{NY.GDP.MKTP.KD}); and market capitalization is defined as share price \texttt{prccd} (converted to USD where needed) multiplied by outstanding shares \texttt{cshoc} (if there are multiple stock issuances \texttt{iid} for a firm, we use the primary issuance). }
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}
+
+
+%%% ----------------- Top bigrams ----------------- %%%
+\begin{table}[!h]
+\caption{Top 20 ngrams in the training library of Turkey, Japan, and Greece}\label{tab:bigrams}
+\scalebox{.9}{
+\begin{threeparttable}[!h]
+\begin{tabular}{lcclcc}
+\toprule
+Ngram & $\omega(b,c)$ & Frequency & Ngram & $\omega(b,c)$ & Frequency \\
+\addlinespace\hline\addlinespace
+\textsc{Panel A: Turkey} \\
+\hline\addlinespace
+\input{tables/Table2_top20ngrams_tr.tex}
+\addlinespace\hline\addlinespace
+\textsc{Panel B: Japan} \\
+\hline\addlinespace
+\input{tables/Table2_top20ngrams_jp.tex}
+\addlinespace\hline\addlinespace
+\textsc{Panel C: Greece} \\
+\hline\addlinespace
+\input{tables/Table2_top20ngrams_gr.tex}
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\item {\footnotesize\textit{Notes:} This table lists the top 20 ngrams when sorted on $\omega(b,c)$ (the \textit{tf}$\times$\textit{idf} in the training library) for three selected countries. Column 2 shows the $\omega(b,c)$ of the ngram, which is the frequency of the ngram in its country-specific library divided by the total number of ngrams in that library (\textit{tf}) multiplied by the log of the number of country libraries divided by the number of country libraries that contain the ngram (\textit{idf}); and column 3 shows the frequency of the ngram in the country-specific library. A country-specific training library consists of (a) all adjacent two-word combinations (bigrams) from the country's Economist Intelligence Unit (EIU) Country Commerce Reports published between 2002 and 2019; and (b) all unigrams in the EIU that are also in a custom country-specific names list that consists of country names, region names, and city names of cities with more than 15,000 inhabitants in 2018 (from Geonames.org), and all adjectival demonymic forms of the country name (from Wikipedia and the CIA World Factbook). We impose that an ngram that is a country name gets assigned the highest \textit{tf}$\times$\textit{idf} of all ngrams in the country library that contain the country name.}
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}
+
+
+%%% ----------------- Basic sanity checks ----------------- %%%
+\clearpage
+\begin{table}[!h]
+\caption{Country Exposure and observed firm links} \label{tab:exposure}
+\centering
+\scalebox{1}{
+\begin{threeparttable}
+\begin{tabular}{lcccccccc}
+\toprule
+\input{tables/Table3_firmcountry_pooledreg.tex}
+\midrule
+Country FE & no & no & no & no & yes \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft] \item \footnotesize{\textit{Notes}: This table shows coefficient estimates and standard errors from regressions at the firm-country level. All variables are as defined in Section 1; summary statistics are provided in Panel A of Table \ref{tab:summstats}. Column 5 includes country fixed effects. Standard errors are robust. ***, **, and * denote statistical significance at the 1, 5, and 10\% level, respectively.}
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}
+
+
+%%% ----------------- Summary statistics ----------------- %%%
+\clearpage
+
+\begin{table}[!h]
+\caption{Summary statistics}\label{tab:summstats}
+\centering
+\scalebox{.83}{
+\begin{threeparttable}
+\begin{tabular}{p{.6\linewidth}cccccc}
+\toprule
+\input{tables/Table4_PanelA_sustats_FirmCountry.tex}
+\midrule
+%\input{tables/Table4_PanelB_sustats_CountryQuarter.tex}
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\item \footnotesize \textit{Notes}: This table shows the mean, median, standard deviation, minimum, maximum, and number of observations of all variables that are used in the subsequent regression analyses. Panels A and B show the relevant statistics for the regression sample at the firm-country and country-quarter unit of analysis, respectively. In Panel A, \textit{CountryExposure}$_{i,c}$ \textit{(std.)} is the average over time of firm $i$'s Country Exposure to country $c$, normalized by the standard deviation; and $\mathbbm{1}(\textit{Headquarter})_{i,c}$, $\mathbbm{1}(\textit{Exports})_{i,c}$, $\mathbbm{1}(\textit{Subsidiaries})_{i,c}$ are binary variables equal to one if firm $i$ is headquartered in country $c$, reports sales at any point between 2002-2017 to country $c$, or has at least one subsidiary in country $c$, respectively. In Panel B, \textit{CountryRisk}$_{c,t}^{ALL}$ \textit{(std.)} is the average for country $c$ and quarter $t$ of the Country Risk perceived by all firms as measured in their earnings call transcripts, normalized by the standard deviation in the panel; \textit{CountryRisk}$^{NHQ}_{c,t}$ \textit{(std.)}, \textit{CountryRisk}$^{FIN}_{c,t}$ \textit{(std.)}, \textit{CountryRisk}$^{NFC}_{c,t}$ \textit{(std.)}, \textit{CountryRisk}$^{US}_{c,t}$ \textit{(std.)}, and \textit{CountryRisk}$^{HQ}_{c,t}$ \textit{(std.)} are the same but based on firms not headquartered in $c$ at $t$, financial (SIC $\in[6000,6800)$), non-financial (SIC $\notin[6000,6800)$), US-based, and domestic firms, respectively; \textit{CountrySentiment}$_{c,t}^{ALL}$ \textit{(std.)} is the average for country $c$ and quarter $t$ of Country Sentiment perceived by all firms, normalized by the standard deviation in the panel; $\overline{\textit{FirmRisk}_{i,t}}_{c,t}$ \textit{(std.)} is the average over all firms headquartered in country $c$ and quarter $t$ of risk words per word mentioned by the firm during its earnings call (restricted to countries for which we have at least five firms), normalized by the standard deviation in the panel; \textit{Realized MSCI volatility}$_{c,t}$ is the standard deviation of the daily MSCI stock return for country $c$ during quarter $t$ (based on local currency), $\textit{MSCI equity return}_{c,t}$ is the $t-1$ to $t$ change in log of the quarter-average MSCI stock return index (based on local currency) for country $c$ and quarter $t$; \textit{Total inflows}$_{c,t}$ \textit{(\%)} are inflows of equity and debt to country $c$ during quarter $t$ relative to the country's stock of capital in the previous quarter; \textit{Sovereign CDS spread}$_{c,t}$ is the end-of-quarter 5-year sovereign CDS spread of country $c$ and quarter $t$ (in percent); \textit{Real GDP growth}$_{c,t}$ is the quarter-to-quarter percent change in real GDP of country $c$ and quarter $t$; $\mathbbm{1}(\textit{Stop episode for total flows}_{c,t})$ and $\mathbbm{1}(\textit{Retrenchment episode for total flows}_{c,t}$ are taken from Forbes and Warnock (2021) and are binary variables equal to one if there is a sudden stop and retrenchment episode, respectively; and $\textit{WUI}_{c,t}\textit{ (std.)}$ is the World Uncertainty Index from Ahir et al. (2018), standardized by its own standard deviation in the panel. See also Appendix Table 7 for details on the construction of the variables.
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}
+
+
+%%% ------------ Validation: MSCI Index return and realized volatility ------------ %%%
+\clearpage
+
+\begin{table}[!h]
+\caption{Country Risk, Country Sentiment, and asset prices}\centering \label{tab:validation}
+\scalebox{.85}{
+\begin{threeparttable}
+\begin{tabular}{lccccccc}
+\toprule
+\input{tables/Table5_countrylevel_validation.tex}
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft] \item {\footnotesize\textit{Notes}: This table shows coefficient estimates and standard errors from regressions at the country-quarter level. $\textit{IHS}(\cdot)$ denotes the inverse hyperbolic sine transformation. All variables are as defined in Table \ref{tab:summstats}; their construction is detailed in Appendix Table 7. Standard errors are clustered at the country level. ***, **, and * denote statistical significance at the 1, 5, and 10\% level, respectively.}
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}
+
+
+%%% ------------ Top origins and destinations of transmission risk ------------ %%%
+\clearpage
+\begin{table}[!h]
+\centering
+\caption{Top five origins and destinations of transmission risk for selected countries} \label{tab:origin_dest}
+\scalebox{.7}{
+\begin{tabular}[t]{p{.3\linewidth}p{.22\linewidth}}
+\toprule
+Firms headquartered in & discuss risks from \\
+\midrule
+\input{tables/Table6_transmissionrisk_topsources.tex}
+\bottomrule
+\end{tabular}
+\begin{tabular}[t]{p{.3\linewidth}p{.25\linewidth}}
+\toprule
+Risks originating in & transmit most to  \\
+\midrule
+\input{tables/Table6_transmissionrisk_topdestinations.tex}
+\bottomrule
+\end{tabular}
+}
+\scalebox{.7}{
+\begin{minipage}{1.18\textwidth}
+{\footnotesize\textit{Notes}: This table lists for the ten largest economies in which firms in our sample are headquartered (column 1), the top five countries those firms discuss risks about (column 2); it also lists for ten selected countries that firms perceive risk in about (column 3), the top five countries those firms are headquartered in (column 4). For additional countries, see Appendix Table 3. The rankings in columns 2 and 4 are based on an appropriate sorting of $\overline{\textit{TransmissionRisk}_{o\to d,t}}_{o\to d} = \frac{1}{T_{o,d}}\sum_{t} \textit{TransmissionRisk}_{o\to d, t}$ by $o$ for a given $d$ (column 2) or by $d$ for a given $o$ (column 4). In column 4, we exclude countries in which we have fewer than 25 firms headquartered, or countries that are not in our list of 45 countries for which we have measures of \textit{CountryRisk}$_{c,t}$.}
+\end{minipage}
+}
+\end{table}
+
+
+%%% ----------------- Transmission Risk properties ----------------- %%%
+\clearpage
+
+\begin{table}[!h]
+\caption{Crisis transmission patterns}\label{tab:transmissionpatterns}
+\small
+\scalebox{.74}{
+\begin{threeparttable}
+\begin{tabular}{p{.62\linewidth}cccccccccc}
+\toprule
+&\multirow{2}{*}{\textsc{Global Impact}} & \textsc{Bilateral} & \textsc{Regularity of} & \multicolumn{1}{c}{\textsc{Financial}} \\
+& & \textsc{Transmission} & \textsc{Transmission} & \textsc{Transmission} \\
+& $\widehat{y}$ & $\widehat{\beta}_{o, \tau}$ & $R^{2}$ & $\widehat{\alpha}^{\textit{FIN}}_{o, \tau}/ \widehat{\alpha}_{o, \tau}$ \\
+\midrule
+\input{tables/Table7_transmissionrisk_overview.tex}
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+}
+\end{table}
+\vspace{-.1in}\hspace{-.25in}
+\scalebox{.74}{
+\begin{minipage}{1.4\textwidth}
+{\footnotesize\textit{Notes}: This table lists four characteristics of each local crisis defined in Figure \ref{tab:crises}: Global Impact, Bilateral Transmission, Regularity of Transmission, and Financial Transmission. The first three characteristics are based on a regression of $\textit{TransmissionRisk}_{o\to d, \tau}$ on $\overline{\textit{TransmissionRisk}}_{o\to d, t\notin S^{o}}$ as defined in Equation 8. Global Impact is the predicted value of $\textit{TransmissionRisk}_{o\to d, \tau}$ for the country with the median of Transmission Risk, $\overline{\textit{TransmissionRisk}_{o\to d,t\notin S^{o}}}^{\textit{median}}$, using the estimated coefficients from the regression; Bilateral Transmission is the estimated coefficient on $\overline{\textit{TransmissionRisk}}_{o\to d, t\notin S^{o}}$, $\widehat{\beta}_{o,\tau}$, with $^{***}$, $^{**}$, and $^{*}$ denoting the statistical significance of $\widehat{\beta}_{o, \tau}$ being different from \textit{one}; and Regularity of Transmission is the $R^{2}$ of the regression. We exclude origin-destination-crises that contain fewer than 10 firms from the regressions. Financial Transmission is the ratio of $\widehat{\alpha}_{o, \tau}^{\textit{FIN}} / \widehat{\alpha}_{o,\tau}$ from a firm-level regression of $CountryRisk_{i,o,\tau}-\overline{CountryRisk}_{i,o,t\notin S^{o}}$ on a constant, $\widehat{\alpha}_{o,\tau}$, and an indicator equal to one if the firm is a financial firm, $\widehat{\alpha}_{o, \tau}^{\textit{FIN}}$, with $^{***}$, $^{**}$, and $^{*}$ denoting the statistical significance of $\widehat{\alpha}_{o, \tau}^{\textit{FIN}}$ being different from zero. Norway 2002Q1 and Poland 2020Q1 are excluded because we did not identify a unified source for the crisis and Brazil 2002q4 is excluded due to the limited country coverage prior to 2003.}
+\end{minipage}
+}
+
+
+
+%%% ----------------- Drivers of capital flows ----------------- %%%
+\clearpage
+
+\begin{table}[!h]
+\caption{Country Risk and capital flows}\centering \label{tab:pushpull}
+\scalebox{.9}{
+\begin{threeparttable}
+\begin{tabular}{lcccccccccc}
+\toprule
+\input{tables/Table8_countrylevel_capitalflows.tex}
+\midrule
+\input{tables/Table8_countrylevel_indicator_capitalflows.tex}
+\midrule
+Country FE & yes & yes & yes & yes & yes \\
+Time FE & no & no & no & yes & yes \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft] {\footnotesize\item \textit{Notes}: This table shows coefficient estimates and standard errors from regressions at the country-quarter level. All other variables are defined as in Table \ref{tab:summstats}. Standard errors are clustered at the country level. ***, **, and * denote statistical significance at the 1, 5, and 10\% level, respectively.}
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}
+
+
+%%% ----------------- Drivers of capital flows (Forbes & Warnock) ----------------- %%%
+\clearpage
+\begin{table}[!h]
+\caption{Country Risk, sudden stops, and retrenchment}\centering \label{tab:pushpull_forbes}
+\scalebox{.9}{
+\begin{threeparttable}
+\begin{tabular}{lcccccccccc}
+\toprule
+\input{tables/Table9_countrylevel_stop.tex}
+\midrule
+\input{tables/Table9_countrylevel_retrench.tex}
+\midrule
+Country FE & yes & yes & yes & yes & yes \\
+Time FE & no & no & no & yes & yes \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft] {\footnotesize\item \textit{Notes}: This table shows coefficient estimates and standard errors from regressions at the country-quarter level. The outcome in Panel A, $\mathbbm{1}(\textit{Stop episode for total flows}_{c,t})$, is a dummy equal to one if there is a stop episode for total capital flows of country $c$ in quarter $t$. The outcome in Panel B, $\mathbbm{1}(\textit{Retrenchment episode for total flows}_{c,t})$, is a dummy equal to one if there is a retrenchment period for total capital flows. Both outcomes are from Forbes and Warnock (2021). All other variables are defined as in Table \ref{tab:summstats}. Standard errors are clustered at the country level. ***, **, and * denote statistical significance at the 1, 5, and 10\% level, respectively.}
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}
+
+
+%%% ----------------- Decomposing Country Risk----------------- %%%
+\clearpage
+
+\begin{table}[!h]
+\caption{Capital flows and heterogeneous perceptions of Country Risk}\label{tab:decomposition}\centering
+\scalebox{1}{
+\begin{threeparttable}
+\begin{tabular}{lccccccccccc}
+\toprule
+\input{tables/Table10_PanelA_countrylevel_executivesviews_inflows.tex}
+\midrule
+\input{tables/Table10_PanelB_countrylevel_executivesviewsFIN_inflows.tex}
+\midrule
+Country FE & yes & yes & yes & yes \\
+Time FE & yes & yes & yes & yes \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]{\footnotesize \item \textit{Notes}: This table shows coefficient estimates and standard errors from regressions at the country-quarter level. All variables are defined as in Table \ref{tab:summstats}. All regressions include country and year-quarter fixed effects. Standard errors are clustered at the country level. ***, **, and * denote statistical significance at the 1, 5, and 10\% level, respectively.}
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}
+
+
+
+
+%%%%%%%%%%%%%%%%%% FIGURES START HERE %%%%%%%%%%%%%%%%%% 
+
+\clearpage
+%%% ----------------- Data coverage ----------------- %%%
+\begin{figure}[!h]
+\centering
+\caption{Coverage of firms over time}\label{fig:coverage}
+\includegraphics[width=\textwidth]{figures/Figure1_coverage.eps}
+
+\end{figure}
+\vspace{-.1in}
+\begin{minipage}[!h]{.9\textwidth}
+\footnotesize\textit{Notes}: This figure plots the percent of market capitalization for firms based in the US and in countries around the world that the earnings call data cover (left y-axis), and the number of countries for which the earnings call data covers at least 50\% of market capitalization (right y-axis). The list of non-US countries is the same list of 45 countries as the countries for which have created $\textit{CountryRisk}_{c,t}$. A firm's market capitalization is calculated based on Compustat North America and Global as follows: \texttt{prccd}$\times$\texttt{cshoc} at the last available data point of each calendar year, where \texttt{prccd} is the close market prices and \texttt{cshoc} is the number of common shares outstanding. Prior to multiplying, we convert non-US dollar market prices into US dollars. If a firm has multiple issuances (\texttt{iid}), we use the market capitalization of the primary issuance. Brazil and Venezuela are excluded from the calculation of the percent of non-US market capitalization covered due to irregularities in their data early in the sample period.
+\end{minipage}
+
+
+
+%%% ----------------- Time series of Greece ----------------- %%%
+\clearpage
+\begin{figure}[!h]
+\centering\caption{Sources of Greek Country Risk} \label{tab:greece}
+\includegraphics[width=.92\textwidth]{figures/Figure2_greece.eps}
+\end{figure}
+
+\begin{minipage}[t]{.92\textwidth}
+\footnotesize
+\begin{tabular}{p{.18\textwidth}p{.78\textwidth}}
+\toprule
+Summary & Example text excerpts from high-impact snippets \\\midrule
+%Start of sovereign debt crisis (2010q2) & ``[...] could give us your exposure to the key markets exposed so Greece Portugal Italy and Spain please [...]'' (Nobel Biocare Holding AG, April 28, 2010) \\
+\textbf{First bailout} \newline (2010q2) & ``Continued concerns about default risk in Greece and other countries in Europe will only cause more volatility [...]'' (Eagle Rock Energy Partners LP, May 6, 2010) \\
+& ``[...] of exposure to banking and sovereign risk in Greece, Italy, Spain, Portugal, and Ireland combined [...]'' (National Bank of Canada, May 28, 2010) \\\addlinespace
+\textbf{Second bailout} \newline (2011q4) & ``[...] the European sovereign debt crisis and the likelihood of a Greek default It is critical that a concerted effort is carried out [...]'' (Bankinter SA, October 21, 2011) \\
+& ``[...] 'sovereign debt crisis producing gutwrenching market gyrations The threat of a Greek Spain and Italy default European Bank recapitalizations and financial contagion [...]'' (Pzena Investment Management Inc, Oct 26, 2011) \\\addlinespace
+%& ``[...] in the media a significant unknown The speculated ramifications of a Greek bond default could spread to other countries such as Italy [...]'' (Stuart Olson Inc, November 9, 2011) \\\hline
+\textbf{Grexit referendum} (2015q3) & ``[...] concern related to the possible impact of a Greek eurozone exit has led to persistent volatility in currencies [...]'' (BlackRock Inc, July 15, 2015) \\
+& ``[...] we operate in Europe despite the uncertainties you know notably in Greece we are gradually witnessing a gradual acceleration in economic activity [...]'' (Societe Generale SA, August 5, 2015) \\\bottomrule
+\end{tabular}
+\end{minipage}
+\vspace{.05in}
+
+\begin{minipage}[t]{.92\textwidth}
+\scriptsize\textit{Notes}: This figure plots the time series of Greek \textit{CountryRisk}$_{c,t}$ as defined in equation (5) but decomposed into Country Risk as perceived by non-financial and financial firms, respectively. The latter are firms whose four-digit SIC code is in 6000$-$6800. The text excerpts are selected from the highest-ranking snippets among all snippets from the top 30 highest-ranked firms when sorted on Country Risk for Greece.
+\end{minipage}
+
+
+%%% ----------------- Time series of Thailand ----------------- %%%
+\clearpage
+\begin{figure}[!h]
+\centering\caption{Sources of Thai Country Risk} \label{tab:thailand}
+\includegraphics[width=\textwidth]{figures/Figure3_thailand.eps}
+\end{figure}
+
+\begin{minipage}[t]{.92\textwidth}
+\footnotesize
+\begin{tabular}{p{.25\textwidth}p{.75\textwidth}}
+\toprule
+Summary & Example text excerpts from high-impact snippets \\\midrule
+%\textbf{Global Financial Crisis} (2008q4) & ``[...] market and the economic situation in the world and also {Thailand} is still so {unstable} that we want to spend some more [...]'' (Total Access Communcation PLC; October 27, 2008) \\
+\textbf{Flood disaster} \newline (2011q4-12q1) & ``[...] follow the disk drive industry know the ((severe)) flooding in {Thailand} has created substantial ((disruption)) and {uncertainty} for the entire hard disk [...] (Hutchinson Technology Inc; November 1, 2011) \\
+& ``[...] about the potential credit impacts of the unfortunate events in {Thailand} At Scotia Capital I can (assure) you that the {variable} compensation [...]'' (Bank of Nova Scotia; December 2, 2011) \\
+& ``[...] {risk} of supply constraints resulting from the recent flooding in {Thailand} Working capital decreased by approximately million to million during the first [...] (March Networks Corp, December 9, 2011) \\\addlinespace
+\textbf{Military coup} \newline (2014q3) & ``[...] which accounts for a major proportion of our sales In {Thailand} sales volume decreased due to political {instability} following the coup detat [...]'' (Mitsubishi Motors Corp; July 30, 2014) \\
+& ``[...] sales and margins However JECs joint venture with Trane in {Thailand} was negatively affected by the political {uncertainty} there that has led [...]'' (Jardine Matheson Holdings Ltd; August 3, 2014) \\
+& ``[...] the BRICs was offset by losses in other countries including {Thailand} which was pressured by geopolitical {risk} On a yeartodate basis we [...] (International Flavors \& Fragrances Inc) \\\bottomrule
+%\textbf{Coronavirus pandemic} (2020q2) & ``[...] are you concerned at all about the {possibility} of the {Thai} Government may not allow migrants to come back in large numbers [...]'' (Total Access Communication PCL; April 24, 2020)  \\\bottomrule
+\end{tabular}
+\end{minipage}
+\vspace{.05in}
+
+\begin{minipage}[t]{.98\textwidth}
+\scriptsize\textit{Notes}: This figure plots the time series of Thai \textit{CountryRisk}$_{c,t}$ as defined in equation (5) but decomposed into Country Risk as perceived by non-financial and financial firms, respectively. The latter are firms whose four-digit SIC code is in 6000$-$6800. The text excerpts are selected from the highest-ranking snippets among all snippets from the top 30 highest-ranked firms when sorted on Country Risk for Thailand.
+\end{minipage}
+
+
+%%% ----------------- US CountryRisk time series ----------------- %%%
+\clearpage
+\begin{figure}[!h]
+\centering\caption{Sources and Perceptions of United States' Country Risk}\label{fig:USA}
+\includegraphics[width=.75\textwidth]{figures/Figure4_unitedstates.eps}
+\end{figure}
+\vspace{-0.1in}
+\begin{minipage}[t]{.9\textwidth}
+\footnotesize
+\begin{tabular}{p{.16\textwidth}p{.86\textwidth}}
+\toprule
+Summary & Example text excerpts from high-impact snippets \\\midrule
+\textbf{Iraq war} \newline (2003q1) & ``[...] the US and other parts of the world and related {US} military action overseas For further descriptions of these {risks} and {uncertainties} [...]'' (Charles River Laboratories International Inc, February 4, 2003) \\
+& ``[...] 'experiencing in the capital markets the slower recovery in the {US} and the geopolitical {uncertainty} Turning to slide three youll see we [...]'' (Bank of Montreal, February 25, 2003) \\\addlinespace
+\textbf{GFC} (2008q1 onwards) & ``[...] tightening of global credit markets The economic {uncertainties} in the {US} and the volatility in equity markets that has resulted from those [...]'' (Canaccord Genuity Group Inc, February 7, 2008) \\
+& ``[...] {uncertainties} in growing economies including high oil prices inflation and {US} subprime financial crisis We may expect continued paucity of the market [...] (Samsung Electronics Co Lt, April 24, 2008) \\\addlinespace
+\textbf{S\&P downgrade} (2011q3) & ``[...] recovering with {uncertainty} and {instability} Especially recently Standard Poors ((downgraded)) {US} credit rating from AAA to AA which resulted in stock market [...]'' (PetroChina Co Ltd, August 25, 2011) \\
+& ``[...] macro {uncertainty} and particularly the fiscal {uncertainty} here in the {US} I was hoping you could comment on how if at all [...]'' (Calamos Asset Management Inc, August 2, 2011) \\\addlinespace
+\textbf{Fiscal cliff} \newline (2012q4) & ``[...]the US fiscal cliff and all the macros in the {US} coupled with EU {uncertainty} and coupled with maybe some growth {uncertainty} [...]'' (Jefferies Group LLC, Dec.\ 18, 2012) \\
+& ``[...] fiscal cliff the challenges in the Eurozone the {uncertainty} of {US} tax policy and the {unknown} impact of the US elections all [...]'' (Equity One Inc, Nov.\ 2, 2012) \\\addlinespace
+\textbf{Trump elected} (2016q4) & ``[...] the regulatory {uncertainty} around Affordable Care Act linked to the {US} election cycle as well as certain {uncertainties} around MA and enrollment [...]'' (Syntel Inc, October 20, 2016) \\
+& ``[...] the overall state of the economic climate primarily in the {US} and the {possibility} of changing international trade policies worldwide Thank you [...]'' (Collectors Universe Inc, February 2, 2017 \\\bottomrule
+\end{tabular}
+\end{minipage}
+
+\scalebox{1}{
+\begin{minipage}[t]{1.02\textwidth}
+\scriptsize\textit{Notes}: This figure plots the time series of United States \textit{CountryRisk}$_{c,t}$ as defined in equation (5), decomposed into Country Risk as perceived by all, domestic, and foreign firms, respectively. The text excerpts are selected from the highest-ranking snippets among all snippets from the top 30 highest-ranked firms when sorted on Country Risk for the United States.
+\end{minipage}
+}
+
+
+
+%%% ----------------- Global crises ----------------- %%%
+\clearpage
+\begin{figure}[!h]
+\caption{Time series of \textit{GlobalRisk}$_{t}$} \label{fig:globalrisk}
+\includegraphics[width=\textwidth]{figures/Figure5_risk_timeFE.eps}
+\end{figure}
+\vspace{-.3in}
+\begin{minipage}[t]{.96\textwidth}
+\footnotesize\textit{Notes}: This figure shows the time series of \textit{GlobalRisk}$_{t}$ defined as the mean of \textit{CountryRisk}$_{c,t}$. Marked in gray are the quarters above two standard deviations (the red horizontal dashed line), which we define as global crises. The coefficients are standardized to have mean zero and standard deviation one for 2002q1-2019q4. NBER-based recession quarters are shaded in grey.
+\end{minipage}
+
+
+
+%%% ----------------- Identifying crises ----------------- %%%
+\clearpage
+
+\begin{figure}[!h]
+\caption{Country Risk, Crises, and Patterns of Transmission}\centering\label{tab:crises}
+\scalebox{.9}{
+\begin{threeparttable}
+\small
+\begin{tabular}{p{.2\linewidth}p{.36\linewidth}p{.1\linewidth}p{.33\linewidth}}
+\toprule
+& \multirow{1}{*}{Source} & Transmission \\\midrule
+
+\textbf{China} & & & \multirow{5}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_CN.eps}} \\
+\quad 2012q4 & Risk of downturn & NFC \\
+\quad 2015q3-16q1 & Economic uncertainty, equity market volatility & NFC \\
+\quad 2018q4-19q4 & US-China trade dispute & NFC \\
+\quad 2020q1 & Start of Coronavirus outbreak & NFC \\\addlinespace
+\textbf{Turkey} & & & \multirow{5}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_TR.eps}} \\
+\quad 2016q1 & FX volatility  \\
+\quad 2016q3 & Attempted coup against Erdogan & NFC, I \\
+\quad 2018q4-19q1 & Currency and debt crisis \\
+\quad 2019q4 & FX volatility & I\\\addlinespace
+\textbf{Greece} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_GR.eps}} \\
+\quad 2010q1-10q2 & Sovereign debt crisis, first bailout & FIN  \\
+\quad 2011q1-12q3 & Sovereign debt crisis, second bailout & FIN \\
+\quad 2015q3 & Grexit referendum, third bailout & FIN \\\\\addlinespace
+\textbf{United States} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_US.eps}} \\
+\quad 2008q1-08q3 & Lehman, start of GFC & I \\
+\quad 2010q2 & Deepwater Horizon oil spill \\
+\quad 2011q3-q4 & S\&P downgrade, uncertainty about fiscal policy & FIN \\\addlinespace
+\textbf{Brazil} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_BR.eps}} \\
+\quad 2002q4 & Political uncertainty from elections, economic crisis \\
+\quad 2015q1-16q2 & Deep recession, political turmoil & NFC \\\\\addlinespace
+\textbf{Great Britain} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_GB.eps}} \\
+\quad 2016q3-q4 & Brexit referendum & FIN \\
+\quad 2019q1-20q1 & Risk of no-deal Brexit, general election, Brexit \\\\\addlinespace
+\textbf{Russia} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_RU.eps}} \\
+\quad 2011q4 & Economic uncertainty \\
+\quad 2014q2-15q4 & Oil price drop, Crimean crisis, ruble devaluation, financial crisis & NFC \\\\\addlinespace
+
+\addlinespace
+&\multicolumn{2}{c}{
+\begin{tcolorbox}[
+width=1.5in,
+boxsep=0pt,
+left=0pt,
+right=0pt,
+top=2pt,
+arc=0pt,
+colback=white,
+boxrule=.5pt
+]%%
+\quad\tikz\draw[black,fill=gray] (0,0) circle (1ex); Global crisis
+
+\quad\tikz\draw[black,fill=red] (0,0) circle (1ex); Local crisis
+
+\end{tcolorbox}
+} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\item {\scriptsize\textit{Notes}: This table describes and plots country crises based on \textit{CountryRisk}$_{c,t}$ for the country indicated in column 1. A global crisis (gray dots in the figures) is defined as \textit{GlobalRisk}$_{t}$ being above two standard deviations (see also Figure \ref{fig:globalrisk}); a local crisis (red dots in the figures) is defined as the country's \textit{CountryRisk}$_{c,t}$ being above two standard deviations in the panel (the red horizontal dashed line). Column 1 indicates the country and crisis. For Brazil, we assume that 2015q4, which is just below the threshold of two standard deviations, is nevertheless part of the crisis that started in 2015q1. Column 2 indicates the Source of crises. It is a description summarizing discussions of top 30 highest-ranked firms when sorted on Country Risk in that quarter. Column 3 indicates the Transmission of crises: $I$ is based on column 3 of Table \ref{tab:transmissionpatterns} and indicates that the Regularity of Transmission is in the lowest quartile; $NFC$ and $FIN$ are based on column 4 of Table \ref{tab:transmissionpatterns} and indicate a statistically significant difference in the transmission of risk from ${o}$ to $d$ for non-financial and financials, respectively.}
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{figure}
+
+\addtocounter{figure}{-1}
+\begin{figure}[!h]
+\caption{Country Risk, Crises, and Patterns of Transmission (continued)}\centering
+\scalebox{.9}{
+\begin{threeparttable}
+\small
+\begin{tabular}{p{.2\linewidth}p{.36\linewidth}p{.1\linewidth}p{.33\linewidth}}
+\toprule
+Where and when & Source & Transmission \\\midrule
+
+\textbf{Ireland} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_IE.eps}} \\
+\quad 2011q4 & European sovereign debt crisis & FIN \\
+\quad 2020q1 & Brexit \\\\\\\addlinespace
+\textbf{Spain} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_ES.eps}} \\
+\quad 2011q4 & European sovereign debt crisis; elections \\
+\quad 2012q3-12q4 & Rising government yields; bailout \\\\\addlinespace
+\textbf{Thailand} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_TH.eps}} \\
+\quad 2011q4-12q1 & Flood disaster & NFC \\
+\quad 2014q3 & Coup d'\'etat by military \\\\\\\addlinespace
+\textbf{Egypt} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_EG.eps}} \\
+\quad 2011q1-11q2 & Egyptian revolution & NFC \\\\\\\\\addlinespace
+\textbf{Hong Kong} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_HK.eps}} \\
+\quad 2019q3-20q1 & Protests against bill allowing extradition to China \\\\\\\addlinespace
+\textbf{Japan}  & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_JP.eps}} \\
+\quad 2011q2-q3 & Fukushima disaster & NFC, I \\\\\\\\\addlinespace
+
+\addlinespace
+&\multicolumn{2}{c}{
+\begin{tcolorbox}[
+width=1.5in,
+boxsep=0pt,
+left=0pt,
+right=0pt,
+top=2pt,
+arc=0pt,
+colback=white,
+boxrule=.5pt
+]%%
+\quad\tikz\draw[black,fill=gray] (0,0) circle (1ex); Global crisis
+
+\quad\tikz\draw[black,fill=red] (0,0) circle (1ex); Local crisis
+
+\end{tcolorbox}
+} \\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+}
+\end{figure}
+
+\addtocounter{figure}{-1}
+\begin{figure}[!h]
+\caption{Country Risk, Crises, and Patterns of Transmission (continued)}\centering
+\scalebox{.9}{
+\begin{threeparttable}
+\small
+\begin{tabular}{p{.2\linewidth}p{.36\linewidth}p{.1\linewidth}p{.33\linewidth}}
+\toprule
+\multirow{1}{*}{Where and when} & \multirow{1}{*}{Source} & \multirow{1}{*}{Transmission} \\\midrule
+
+\textbf{Italy} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_IT.eps}} \\\\
+\quad 2011q4 & European sovereign debt crisis & FIN \\\\\\\addlinespace
+\textbf{Iran} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_IR.eps}} \\\\
+\quad 2012q1 & Green Revolution & I \\\\\\\addlinespace
+\textbf{Mexico} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_MX.eps}} \\\\
+\quad 2017q1 & Trump; trade risks & NFC \\\\\\\addlinespace
+\textbf{Nigeria} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_NG.eps}} \\
+\quad 2003q2 & Oil workers' strike & I \\\\\\\\\addlinespace
+\textbf{Norway} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_NO.eps}} \\
+\quad 2002q1 & Cooccurrence of local concerns \\\\\\\\\addlinespace
+%  (whether to move oil rig)
+\textbf{Poland} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_PL.eps}} \\
+\quad 2020q1 & Coocurrence of local concerns \\\\\\\\\addlinespace
+% (real estate loans denoted in Swiss francs; Coronavirus; competitive environment)
+\textbf{Venezuela} & & & \multirow{4}{*}{\includegraphics[width=.33\textwidth]{figures/Figure6_crises_VE.eps}} \\
+\quad 2003q1 & Aftermath of oil strike & NFC, I \\\\\\\\\addlinespace
+
+\addlinespace
+&\multicolumn{2}{c}{
+\begin{tcolorbox}[
+width=1.5in,
+boxsep=0pt,
+left=0pt,
+right=0pt,
+top=2pt,
+arc=0pt,
+colback=white,
+boxrule=.5pt
+]%%
+\quad\tikz\draw[black,fill=gray] (0,0) circle (1ex); Global crisis
+
+\quad\tikz\draw[black,fill=red] (0,0) circle (1ex); Local crisis
+
+\end{tcolorbox}
+} \\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+}
+\end{figure}
+
+
+
+%%% ----------------- TransmissionRisk scatter ----------------- %%%
+\clearpage
+\begin{figure}[!h]
+\captionsetup{font=small}
+\centering
+\caption{Patterns of Transmission during Major Crises}\label{fig:crisis_transmission}
+\begin{subfigure}[t]{0.35\textwidth}
+\centering
+\caption{Start of GFC, USA (2008q1-q3)}
+\includegraphics[width=\textwidth]{figures/Figure7_transmissionrisk_scatter_US_crisis1.eps}
+\end{subfigure}
+\begin{subfigure}[t]{0.35\textwidth}
+\centering
+\caption{Start of Covid, China (2020q1)}
+\includegraphics[width=\textwidth]{figures/Figure7_transmissionrisk_scatter_CN_crisis4.eps}
+\end{subfigure}
+
+\begin{subfigure}[t]{0.35\textwidth}
+\centering
+\caption{Thai Floods (2011q4-12q1)}
+\includegraphics[width=\textwidth]{figures/Figure7_transmissionrisk_scatter_TH_crisis1.eps}
+\end{subfigure}
+\begin{subfigure}[t]{0.35\textwidth}
+\centering
+\caption{First bailout, Greece (2010q1-q2)}
+\includegraphics[width=\textwidth]{figures/Figure7_transmissionrisk_scatter_GR_crisis1.eps}
+\end{subfigure}
+
+\begin{subfigure}[t]{0.35\textwidth}
+\centering
+\caption{Hong Kong protests (2019q3-19q4)}
+\includegraphics[width=\textwidth]{figures/Figure7_transmissionrisk_scatter_HK_crisis1.eps}
+\end{subfigure}
+\begin{subfigure}[t]{0.35\textwidth}
+\centering
+\caption{Fukushima (2011q2-q3)}
+\includegraphics[width=\textwidth]{figures/Figure7_transmissionrisk_scatter_JP_crisis1.eps}
+\end{subfigure}
+\end{figure}
+\vspace{-.15in}
+\begin{minipage}[!h]{.85\textwidth}
+\footnotesize\textit{Notes}: This figure plots for six different crises, each in one panel, $\textit{TransmissionRisk}_{o\to d, \tau}$ against $\overline{\textit{TransmissionRisk}}_{o\to d, t\notin S^{o}}$, the fitted regression line from a linear regression as defined in Equation \ref{eq_crisistransmission_level}, and the 45 degree line (in gray). The crises are selected from Table \ref{tab:transmissionpatterns} and the fitted regression line corresponds to the regression on which the values reported in that table are based on.
+\end{minipage}
+
+
+
+\clearpage
+%%% ----------------- FIN vs NFC ----------------- %%%
+\begin{figure}[!h]
+\centering
+\caption{Italy: European sovereign debt crisis (2011q4)}\label{fig:transmissionrisk_fin}
+\includegraphics[width=.8\textwidth]{figures/Figure8_transmissionrisk_scatter_IT_NFCvsFIN_crisis1.eps}
+
+\end{figure}
+\vspace{-.1in}
+\begin{minipage}[!h]{\textwidth}
+\footnotesize\textit{Notes}: This figure plots for two set of firms, financials and non-financials, $\textit{TransmissionRisk}_{o\to d, \tau}$ against $\overline{\textit{TransmissionRisk}}_{o\to d, t\notin S^{o}}$, the fitted regression line from a linear regression as defined in Equation \ref{eq_crisistransmission_level}, and the 45 degree line (in gray). The crisis is selected from Table \ref{tab:transmissionpatterns}.
+\end{minipage}
+
+\end{document}
