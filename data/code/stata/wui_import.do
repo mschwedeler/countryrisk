@@ -3,9 +3,10 @@
 *                                                                              *
 *                                 Prepare wuiQ.dta                             *  
 ********************************************************************************
+args input_file output_file
 
 
-import excel "${RAW_DATA}/world_uncertainty_index/WUI_Data_03032021.xlsx", ///
+import excel "`input_file'", ///
 	sheet("T2") firstrow allstring clear
 	
 	
@@ -40,4 +41,4 @@ xtset, clear
 sort country_iso3 dateQ
 order country_iso3 dateQ
 compress
-save "${DATA}/temp/wuiQ.dta", replace	
+save "`output_file'", replace	

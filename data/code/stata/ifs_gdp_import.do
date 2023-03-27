@@ -4,8 +4,9 @@
 *                                Prepare ifs_gdpQ.dta                          *  
 ********************************************************************************
 
+args input_file output_file
 
-import excel using "${RAW_DATA}/ifs_gdp/imf_ifs_gdp.xlsx", clear
+import excel using "`input_file'", clear
 
 
 *Clean
@@ -55,4 +56,4 @@ la var gdprealmix_pct "Pct change of real gdp (spliced); domestic curr; not SA"
 *Save
 sort country_iso2 dateQ
 compress
-save "${DATA}/temp/ifs_gdpQ.dta", replace
+save "`output_file'", replace

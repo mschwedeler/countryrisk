@@ -3,9 +3,10 @@
 *                                                                              *
 *                            Prepare markit_cdsQ.dta                           *  
 ********************************************************************************
+args input_file output_file
 
 
-use "$RAW_DATA/markit_cds/ZBCJBOFJ843QUMYB.dta", clear
+use "`input_file'", clear
 
 keep redcode date tier ccy ticker shortname docclause country spread5y
 
@@ -139,4 +140,4 @@ la var spread5y "5-year sovereign CDS spread (in pct)"
 la var spread5y_pa "5-year sovereign CDS spread (in pct), Period Average"
 
 compress
-save "$DATA/temp/markit_cdsQ.dta", replace
+save "`output_file'", replace

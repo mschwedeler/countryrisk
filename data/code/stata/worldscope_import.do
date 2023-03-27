@@ -3,9 +3,10 @@
 *                                                                              *
 *                Prepare worldscope.dta and worldscope_FirmCountry.dta         *  
 ********************************************************************************
+args input_file compustat_na_file compustat_global_file firmcountryyear_output_file firmcountry_output_file
 
 
-use "${RAW_DATA}/worldscope/capex_sales_intermediate.dta", clear
+use "`input_file'", clear
 	
 *Keep only capex nonmissing
 keep if segment_sale != .
@@ -30,7 +31,7 @@ gen sale_seg_dummy = (segment_sale!=.)
 
 *Bring in CUSIP-to-GVKey mapping
 preserve
-	import delimited "${RAW_DATA}/compustat/na/na_names.csv" ///
+	import delimited "`compustat_na_file'" ///
 		, stringcols(_all) clear
 		
 	// cusip is 9 digits
@@ -53,7 +54,7 @@ drop _merge year1 year2
 
 *Bring in ISIN-to-GVKey mapping
 preserve
-	import delimited "${RAW_DATA}/compustat/global/g_names.csv" ///
+	import delimited "`compustat_global_file'" ///
 		, stringcols(_all) clear
 		
 	// cusip is 9 digits
@@ -76,7 +77,7 @@ drop _merge year1 year2
 
 *Bring in SEDOL-to-GVKey mapping
 preserve
-	import delimited "${RAW_DATA}/compustat/global/g_names.csv" ///
+	import delimited "`compustat_global_file'" ///
 		, stringcols(_all) clear
 		
 	// cusip is 9 digits
@@ -99,7 +100,7 @@ drop _merge year1 year2
 
 *Bring in TIC-to-GVKey mapping
 preserve
-	import delimited "${RAW_DATA}/compustat/na/na_names.csv" ///
+	import delimited "`compustat_na_file'" ///
 		, stringcols(_all) clear
 		
 	// cusip is 9 digits
@@ -140,9 +141,9 @@ la var segment_sales "Sales to geographic segment (in USD)"
 
 *Save
 compress
-save "${DATA}/temp/worldscope_FirmYearCountry.dta", replace
+save "`firmcountryyear_output_file'", replace
 
 *Save time invariant version
 collapse (max) sale_seg_dummy (mean) segment_sales, by(gvkey country_iso3)
 la var segment_sales "Sales to geographic segment (in USD)"
-save "${DATA}/temp/worldscope_FirmCountry.dta", replace
+save "`firmcountry_output_file'", replace

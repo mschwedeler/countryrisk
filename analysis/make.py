@@ -4,17 +4,17 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
-from typing import Dict
+from typing import Dict, Iterable, Union
 
 import yaml
 
-import python.helpers as h
+import code.python.helpers as h
 
 # project root
 ROOT = Path(
     os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
-        '../../'
+        '../'
     )
 )
 
@@ -38,10 +38,46 @@ def check_files_exist(file_dict: Dict[str, str]) -> Dict[str, str]:
         _type_: Returns none if all files exist.
     """
     for file_name, path_str in file_dict.items():
-        if not os.path.exists(path_str):
-            raise FileNotFoundError(
-                f'File {file_name}: {path_str} is required but not found. Make sure it has been generated.'
-            )
+        if isinstance(path_str, str):
+            if not os.path.exists(path_str):
+                raise FileNotFoundError(
+                    f'File {file_name}: {path_str} is required but not found. Make sure it has been generated.'
+                )
+        elif isinstance(path_str, Iterable):
+            for file in path_str:
+                if not os.path.exists(file):
+                    raise FileNotFoundError(
+                        f'File {file} is required but not found. Make sure it has been generated.'
+                    )
+        else:
+            raise NotImplementedError
+        
+
+def prepend_files(
+        input_dict: Dict[str, Union[str, Iterable[str]]],
+        to_prepend: Path,
+        raw_data: Path
+) -> Dict[str, Union[Path, Iterable[str]]]:
+    data_files = {}
+    for file_name, files in input_dict.items():
+        if file_name == 'TFIDF_FILES':
+            data_files[file_name] = [
+                raw_data.joinpath(x).as_posix() for x in files
+            ]
+            continue
+        if isinstance(files, str):
+            data_files[file_name] = to_prepend.joinpath(files).as_posix()
+        elif isinstance(files, list):
+            data_files[file_name] = [
+                to_prepend.joinpath(x).as_posix() for x in files
+            ]
+        elif isinstance(files, dict):
+            data_files[file_name] = {
+                key: to_prepend.joinpath(value).as_posix() for key, value in files.items()
+            }
+        else:
+            raise NotImplementedError(f'Not implemented: {type(files)}')
+    return data_files
 
 if __name__ == '__main__':
 
@@ -59,12 +95,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
         # add absolute path to files
-        final_data = {}
-        for file_name, file_str in config_dict['final_data'].items():
-            if re.search(r'eiu/[a-z][a-z]_tfidf\.csv', file_str):
-                final_data[file_name] = RAW_DATA.joinpath(file_str).as_posix()
-            else:
-                final_data[file_name] = DATA.joinpath(file_str).as_posix()
+        final_data = prepend_files(config_dict['final_data'], DATA, RAW_DATA)
     
     # Replace existing output folder with empty folder
     if args.clean_slate:
@@ -212,13 +243,13 @@ if __name__ == '__main__':
 
     # Table 2
     print('Table 2...')
-    for ciso2 in ['gr','jp','tr']:
+    for file in final_data['TFIDF_FILES']:
         # prepare data
-        table_2_data = h.prepare_table_2(final_data[f'TFIDF_{ciso2.upper()}_FILE'])
+        table_2_data = h.prepare_table_2(file)
         # write data
         h.write_table_2(
             table_2_data,
-            f'{OUTPUT_FOLDER}/tables/Table2_top20ngrams_{ciso2}.tex'
+            f"{OUTPUT_FOLDER}/tables/Table2_top20ngrams_{re.search(r'/([a-z][a-z])_', file)[1]}.tex"
         )
 
     # Table 3

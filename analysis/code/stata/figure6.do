@@ -15,7 +15,7 @@ drop global*
 tempfile parent_data
 save "`parent_data'", replace
 
-do "`data_folder'/code/crises_variables.do"
+do "`data_folder'/code/stata/crises_variables.do"
 scalar sd_global = 2
 
 merge 1:1 country_iso2 dateQ using "`parent_data'"

@@ -3,16 +3,20 @@
 *                                                                              *
 *                       Prepare analysis_CountryQuarter.dta                    *  
 ********************************************************************************
+args input_file output_file temp_folder forbes_warnock_file
+
 global datatypes "_all _hq _financial _us"
 
 *** 1) Collapse different aggregations
-foreach weight in "" "_at" "_lat" "_bc" "_small" "_large" {
+/* foreach weight in "" "_at" "_lat" "_bc" "_small" "_large" {
 
 	/*
 	The weights are only used once, for Appendix Table 11 when we stratify
 	CountryRisk. Since it takes ages to go through this loop multiple times,
 	I commented this out.
 	*/
+*/
+local weight ""
 
 foreach dataset of global datatypes  {
 
@@ -25,7 +29,7 @@ foreach dataset of global datatypes  {
     di "-----"
 
     *Start with data at firm-country-quarter level
-    use "${RAW_DATA}/refinitiv/scores.dta", clear
+    use "`input_file'", clear
     
     *Restrict to relevant sample
     if "`dataset'" == "_all" {
@@ -52,36 +56,36 @@ foreach dataset of global datatypes  {
 	gen nrofhqfirms = (country_iso2 == loc_iso2)
 
     *Deal with weighted data sets (for Appendix Table 11)
-		if "`weight'" != "" {
-			if "`weight'" == "_at" {
-				gen touse = at
-			}
-			else if "`weight'" == "_lat" {
-				gen touse = lat
-			}
-			else if "`weight'" == "_bc" {
-				gen touse = at_bc
-			}
-			else if "`weight'" == "_small" {
-				keep if big == 0
-				gen touse = 1
-			}
-			else if "`weight'" == "_large" {
-				keep if big == 1
-				gen touse = 1
-			}
-			sort country_iso2 dateQ sample
-			by country_iso2 dateQ sample: egen total = total(touse)
-			gen weight_ict = touse / total
-			drop total
-			foreach a in exposure risk sentiment {
-				replace `a' = weight_ict * `a'
-			}
-			local mode "sum"
-		}
-		else {
-			local mode "mean"
-		}
+    if "`weight'" != "" {
+        if "`weight'" == "_at" {
+            gen touse = at
+        }
+        else if "`weight'" == "_lat" {
+            gen touse = lat
+        }
+        else if "`weight'" == "_bc" {
+            gen touse = at_bc
+        }
+        else if "`weight'" == "_small" {
+            keep if big == 0
+            gen touse = 1
+        }
+        else if "`weight'" == "_large" {
+            keep if big == 1
+            gen touse = 1
+        }
+        sort country_iso2 dateQ sample
+        by country_iso2 dateQ sample: egen total = total(touse)
+        gen weight_ict = touse / total
+        drop total
+        foreach a in exposure risk sentiment {
+            replace `a' = weight_ict * `a'
+        }
+        local mode "sum"
+    }
+    else {
+        local mode "mean"
+    }
 		
 	* Collapse
 	gcollapse (`mode') exposure risk sentiment ///
@@ -97,33 +101,33 @@ foreach dataset of global datatypes  {
     *Save tempfile
     sort country_iso2 dateQ data
     compress
-    save "${DATA}/temp/`dataset'.dta", replace
+    save "`temp_folder'/`dataset'.dta", replace
 }
 
 
 *** 2) Merge all scores together
-use "${DATA}/temp/_all.dta", clear
+use "`temp_folder'/_all.dta", clear
 foreach dataset of global datatypes  {
     if "`dataset'"~="_all" {
-        merge 1:1 country_iso2 dateQ data using "${DATA}/temp/`dataset'"
+        merge 1:1 country_iso2 dateQ data using "`temp_folder'/`dataset'"
         drop _merge
     }
 }
 
 
 * Add firm risk (see Hassan et al. (2019))
-merge m:1 country_iso2 dateQ using "${DATA}/temp/firmrisk.dta"
+merge m:1 country_iso2 dateQ using "`temp_folder'/firmrisk.dta"
 drop if _merge == 2
 drop _merge
 
 
 * Add country identifiers
 ren country_iso2 iso2
-merge m:1 iso2 using "${DATA}/temp/iso2_iso3.dta"
+merge m:1 iso2 using "`temp_folder'/iso2_iso3.dta"
 drop if _merge == 2
 drop _merge
 ren iso3 country_iso3
-merge m:1 iso2 using "${DATA}/temp/iso2_names.dta"
+merge m:1 iso2 using "`temp_folder'/iso2_names.dta"
 drop if _merge == 2
 drop _merge
 ren iso2 country_iso2
@@ -131,7 +135,7 @@ ren iso2 country_iso2
 
 * Add IMF capital flows (broken down by type) data
 preserve
-    use "${DATA}/temp/grcf_capital_flows.dta", clear
+    use "`temp_folder'/grcf_capital_flows.dta", clear
     keep iso_country_code date_q  *_outflows *_inflows total_net
     foreach x in total portfolio_debt portfolio_equity portfolio_total ///
         fdi_debt fdi_equity fdi_total other_loans {
@@ -152,7 +156,7 @@ drop _merge
 
 * ForbesWarnock sudden stops/retrenchment
 preserve
-    use "${RAW_DATA}/forbeswarnock_suddenstops/ForbesWarnock_episodes.dta", clear
+    use "`forbes_warnock_file'", clear
     ren time dateQ
     ren cc_d country_iso2
     keep country_iso2 dateQ stop_epiTO retrench_epiTO
@@ -165,31 +169,31 @@ drop _merge
 
 
 * Add MSCI data
-merge m:1 country_iso2 dateQ using "${DATA}/temp/msci_returnsQ.dta"
+merge m:1 country_iso2 dateQ using "`temp_folder'/msci_returnsQ.dta"
 drop if _merge == 2
 drop _merge
 
 
 * Add soveregin CDS data
-merge m:1 country_iso2 dateQ using "${DATA}/temp/markit_cdsQ.dta"
+merge m:1 country_iso2 dateQ using "`temp_folder'/markit_cdsQ.dta"
 drop if _merge == 2
 drop _merge
     
 	
 * Add World Uncertainty Index
-merge m:1 country_iso3 dateQ using "${DATA}/temp/wuiQ.dta"
+merge m:1 country_iso3 dateQ using "`temp_folder'/wuiQ.dta"
 drop if _merge == 2
 drop _merge
 
-
+/*
 * Add EPU national
-merge m:1 country_iso3 dateQ using "${DATA}/temp/epu_national.dta"
+merge m:1 country_iso3 dateQ using "`temp_folder'/epu_national.dta"
 drop if _merge == 2
 drop _merge
-
+*/
 
 * Add GDP
-merge m:1 country_iso2 dateQ using "${DATA}/temp/ifs_gdpQ.dta", ///
+merge m:1 country_iso2 dateQ using "`temp_folder'/ifs_gdpQ.dta", ///
     keepusing(gdprealmix_pct gdpreal_pct)
 drop if _merge == 2
 drop _merge
@@ -224,7 +228,7 @@ drop _merge
 
 * Crisis indicator
 preserve
-	import delimited using "${DATA}/temp/crises.csv", clear varnames(1)
+	import delimited using "`temp_folder'/crises.csv", clear varnames(1)
 	gen dateQ = quarterly(dateq, "YQ")
 	format dateQ %tq
 	drop dateq
@@ -271,7 +275,7 @@ gen d_realizedvol = realizedvol - l.realizedvol
 gen d_total_inflows = total_inflows - l.total_inflows
 gen d_wui_std = d.wui_std
 gen d_log_wui = log(wui) - log(l.wui)
-gen d_log_epu_national = log(epu_national) - log(l.epu_national)
+*gen d_log_epu_national = log(epu_national) - log(l.epu_national)
 
 xtset, clear
 drop id
@@ -329,5 +333,5 @@ la var firmrisk_5plus "Average risk based on domestic firms"
 sort country_iso2 data dateQ
 order country_iso2 data dateQ
 compress
-saveold "${DATA}/final/analysis_CountryQuarter`weight'.dta", replace version(13)
-}
+save "`output_file'", replace
+*}

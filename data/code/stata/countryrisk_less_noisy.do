@@ -3,9 +3,9 @@
 *                                                                              *
 *                  Define CountryRisk_ict, Create FirmCountryQuarter.dta       *  
 ********************************************************************************
+args input_file output_file
 
-
-use "${RAW_DATA}/refinitiv/scores.dta", clear
+use "`input_file'", clear
 
 keep gvkey country_iso2 country_name dateQ loc_iso2 sic risk exposure ric company_name
 
@@ -41,4 +41,4 @@ gen CountryRisk_less_noisy = exposure * risk_resid
 
 
 compress
-save "${DATA}/temp/transmissionrisk_FirmCountryQuarter.dta", replace
+save "`output_file'	", replace

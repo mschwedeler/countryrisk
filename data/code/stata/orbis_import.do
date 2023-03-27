@@ -3,9 +3,10 @@
 *                                                                              *
 *                        		Prepare orbis.dta                              *  
 ********************************************************************************
+args input_file output_file
 
 
-use "${RAW_DATA}/orbis/orbis_downloaded.dta", clear
+use "`input_file'", clear
 
 
 * Keep cross section of 2016
@@ -22,4 +23,4 @@ replace gvkey = "00" + gvkey if length(gvkey) == 4
 
 sort gvkey country_iso2
 order gvkey country_iso2
-save "${DATA}/temp/orbis.dta", replace
+save "`output_file'", replace

@@ -2,18 +2,80 @@ general:
   stata_exec: 'stata-mp'
 
 final_data:
-  COVERAGE_FILE: 'final/data_coverage.pkl' # Figure 1, Table 1
-  DECOMPOSED_FIN_FILE: 'final/country_quarter_decomposed_fin.pkl' # Figures 2 and 3
-  DECOMPOSED_HQ_FILE: 'final/country_quarter_decomposed_hq.pkl' # Figure 4
-  COUNTRYQUARTER_FILE: 'final/analysis_CountryQuarter.dta' # Figures 5, 6, Tables 4, 5, 8, 9, 10
-  FIRMCOUNTRY_FILE: 'final/analysis_FirmCountry.dta' # Tables 3, 4
-  TRANSMISSIONRISK_TAU_FILE: 'final/transmissionrisk_OriginDestinationTau.dta' # Figures 7 and 8, Table 7
-  TRANSMISSIONRISK_FILE: 'final/transmissionrisk_OriginDestination.dta' # Table 6
-  TRANSMISSIONRISK_FIRM_TAU_FILE: 'final/transmissionrisk_OriginFirmTau.dta' # Table 7
-  WORLDSCOPE_FILE: 'temp/worldscope_FirmYearCountry.dta' # Table 1
-  GDP_FILE: 'temp/worldbank_gdp_2019.csv' # Table 1
-  TFIDF_GR_FILE: 'eiu/gr_tfidf.csv' # Table 2
-  TFIDF_JP_FILE: 'eiu/jp_tfidf.csv' # Table 2
-  TFIDF_TR_FILE: 'eiu/tr_tfidf.csv' # Table 2
+  COVERAGE_FILE: 'final/data_coverage.pkl' # for Figure 1, Table 1
+  DECOMPOSED_FIN_FILE: 'final/country_quarter_decomposed_fin.pkl' # for Figures 2 and 3
+  DECOMPOSED_HQ_FILE: 'final/country_quarter_decomposed_hq.pkl' # for Figure 4
+  COUNTRYQUARTER_FILE: 'final/analysis_CountryQuarter.dta' # for Figures 5, 6, Tables 4, 5, 8, 9, 10
+  FIRMCOUNTRY_FILE: 'final/analysis_FirmCountry.dta' # for Tables 3, 4
+  TRANSMISSIONRISK_TAU_FILE: 'final/transmissionrisk_OriginDestinationTau.dta' # for Figures 7 and 8, Table 7
+  TRANSMISSIONRISK_FILE: 'final/transmissionrisk_OriginDestination.dta' # for Table 6
+  TRANSMISSIONRISK_FIRM_TAU_FILE: 'final/transmissionrisk_OriginFirmTau.dta' # for Table 7
+  WORLDSCOPE_FILE: 'final/worldscope_FirmYearCountry.dta' # for Table 1
+  GDP_FILE: 'final/worldbank_gdp_2019.csv' # for Table 1
+  TFIDF_FILES: # for Table 2
+   - 'eiu/gr_tfidf.csv'
+   - 'eiu/jp_tfidf.csv'
+   - 'eiu/tr_tfidf.csv'
 
-clean_data:
+raw_data:
+  CFNAI_FILE: 'cfnai/cfnai-realtime-3-xlsx.xlsx'
+  WORLDBANK_FILE: 'worldbank_gdp/86fdf075-7e81-4ace-bd88-1035908153e7_Data.csv'
+  SCORES_FILE: 'refinitiv/scores.dta'
+  COUNTRYIDENTIFIERS_FILES:
+    - 'country_identifiers/iso3.json'
+    - 'country_identifiers/names.json'
+  COMPUSTAT_FILES:
+   - 'compustat/global/g_company.pkl'
+   - 'compustat/global/g_secd_dec2002_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2003_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2004_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2005_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2006_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2007_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2008_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2009_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2010_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2011_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2012_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2013_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2014_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2015_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2016_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2017_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2018_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2019_marketcap.pkl'
+   - 'compustat/global/g_secd_dec2020_marketcap.pkl'
+   - 'compustat/na/na_company.pkl'
+   - 'compustat/na/na_secd_dec2002_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2003_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2004_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2005_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2006_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2007_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2008_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2009_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2010_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2011_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2012_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2013_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2014_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2015_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2016_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2017_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2018_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2019_marketcap.pkl'
+   - 'compustat/na/na_secd_dec2020_marketcap.pkl'
+  COMPUSTAT_NA_NAMES_FILE: 'compustat/na/na_names.csv'
+  COMPUSTAT_GLOBAL_NAMES_FILE: 'compustat/global/g_names.csv'
+  IMF_IFS_GDP_FILE: 'ifs_gdp/imf_ifs_gdp.xlsx'
+  IMF_CAPITALFLOWS_FILES:
+    BOP_CODES: 'imf_capitalflows/IMF_BOP_Codes.xlsx' # to create crosswalk for IMF codes
+    BOP_TIMESERIES: 'imf_capitalflows/BOP_02-21-2021 20-53-42-00_timeSeries.csv'
+    COUNTRYCODES: 'imf_capitalflows/code_list.dta'
+  MSCI_FILE: 'msci_returns/msci_updated20201222.csv'
+  MARKIT_FILE: 'markit_cds/ZBCJBOFJ843QUMYB.dta'
+  WUI_FILE: 'world_uncertainty_index/WUI_Data_03032021.xlsx'
+  ORBIS_FILE: 'orbis/orbis_downloaded.dta'
+  WORLDSCOPE_FILE: 'worldscope/capex_sales_intermediate.dta'
+  FIRMLEVELRISK_FILE: 'firm_risk/firmquarter_2022q1.csv'
+  FORBESWARNOCK_FILE: 'forbeswarnock_suddenstops/ForbesWarnock_episodes.dta'

@@ -1,7 +1,9 @@
+from pathlib import Path
+
 import pandas as pd
 
 def create_decomposed_country_quarter(
-    scores_file: str, output_file: str
+    scores_file: Path, output_file: str
 ) -> None:
     print('Create decomposed country-quarter data...')
     # Load firm-country-quarter data

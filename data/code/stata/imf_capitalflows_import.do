@@ -1,13 +1,20 @@
 ********************************************************************************
 *                        imf_capitalflows_import.do file:                      *
 *                                                                              *
-*                     Prepare grcf_capital_flows_updated2.dta                  *  
+*                     Prepare grcf_capital_flows.dta                           *  
 ********************************************************************************
 
+args bop_codes_file bop_timeseries_file countrycodes_file output_file temp_folder
+
+di "bop_codes_file `bop_codes_file'"
+di "bop_timeseries_file `bop_timeseries_file'"
+di "countrycodes_file `countrycodes_file'"
+di "output_file `output_file'"
+di "temp_folder `temp_folder'"
 
 ** Make Crosswalk for IMF Codes
 
-import excel "${RAW_DATA}/imf_capitalflows/IMF_BOP_Codes.xlsx", sheet("toinclude") firstrow clear
+import excel "`bop_codes_file'", sheet("toinclude") firstrow clear
 
 rename ii* codeii*
 rename bop* codebop*
@@ -21,15 +28,15 @@ gen lmns_not=lmns_prefix+lmns_id+lmns_suffix
 keep code lmns_not
 rename code indicator_code
 
-save "${DATA}/temp/lmns_imf_crosswalk.dta", replace
+save "`temp_folder'/lmns_imf_crosswalk.dta", replace
 
 
 ** Import and Prepare Raw IMF Data 
 
-import delimited "${RAW_DATA}/imf_capitalflows/BOP_02-21-2021 20-53-42-00_timeSeries.csv", varnames(nonames) clear
+import delimited "`bop_timeseries_file'", varnames(nonames) clear
 
-save "${DATA}/temp/imf_bop.dta", replace
-use "${DATA}/temp/imf_bop.dta", clear
+save "`temp_folder'/imf_bop.dta", replace
+use "`temp_folder'/imf_bop.dta", clear
 
 rename v1 country
 rename v2 ccode
@@ -47,25 +54,25 @@ forvalues i=6/`var_num' {
 	destring q`temp', force replace
 }
 
-save "${DATA}/temp/imf_bop_smaller.dta", replace
+save "`temp_folder'/imf_bop_smaller.dta", replace
 
 drop v*
 drop if _n==1
 compress
 destring ccode, replace
-mmerge ccode using "${RAW_DATA}/imf_capitalflows/code_list.dta", umatch(ifscode) ukeep(wbcode)
+mmerge ccode using "`countrycodes_file'", umatch(ifscode) ukeep(wbcode)
 keep if _merge==3
 drop _merge
 rename wbcode iso_country_code
 replace iso_co="EMU" if iso_co=="EUR"
 
-save "${DATA}/temp/imf_bop_smaller.dta", replace
+save "`temp_folder'/imf_bop_smaller.dta", replace
 
 
 
 ** Separate Quartelry and Annual Series, Generate Flow Ratios
 
-use "${DATA}/temp/imf_bop_smaller.dta", clear
+use "`temp_folder'/imf_bop_smaller.dta", clear
 
 
 * Store first and last year covered in data as f_year and l_year respectively.
@@ -80,7 +87,7 @@ foreach x of varlist q* {
 
 * Separate annual and quarterly time series. Apply crosswalk.
 foreach freq in "y" "q" {
-	use "${DATA}/temp/imf_bop_smaller.dta", clear
+	use "`temp_folder'/imf_bop_smaller.dta", clear
 	if "`freq'"=="q"{
 		forvalues year=`f_year'/`l_year' {
 			if `year' < `l_year' {
@@ -98,7 +105,7 @@ foreach freq in "y" "q" {
 
 	keep if attribute=="Value"
 	drop attribute
-	mmerge indicator_code using "${DATA}/temp/lmns_imf_crosswalk.dta"
+	mmerge indicator_code using "`temp_folder'/lmns_imf_crosswalk.dta"
 	keep if _merge==3
 
     // Reshape data so that each observation is a country-period, variables are stocks and flows.
@@ -136,7 +143,7 @@ foreach freq in "y" "q" {
 		gen `f'=`x'/L.`Q'
 	}
 
-	save "${DATA}/temp/imf_bop_lmns_regression_`freq'.dta", replace
+	save "`temp_folder'/imf_bop_lmns_regression_`freq'.dta", replace
 
 }
 
@@ -146,7 +153,7 @@ foreach freq in "y" "q" {
 
 * Interpolate annual stock values.
 
-use "${DATA}/temp/imf_bop_lmns_regression_y.dta", clear
+use "`temp_folder'/imf_bop_lmns_regression_y.dta", clear
 keep Q* iso_co date_y cid 
 gen date_q=qofd(dofy(date_y)+364)
 tsset cid date_q
@@ -158,13 +165,13 @@ foreach x of varlist Q* {
 	drop i_`x'
 }
 keep cid date_q Q*
-save "${DATA}/temp/imf_bop_lmns_regression_ipolate.dta", replace
+save "`temp_folder'/imf_bop_lmns_regression_ipolate.dta", replace
 
 
 ** Merge and recalculate flow ratio variables.
 
-use "${DATA}/temp/imf_bop_lmns_regression_q.dta", clear
-mmerge cid date_q using "${DATA}/temp/imf_bop_lmns_regression_ipolate.dta", update
+use "`temp_folder'/imf_bop_lmns_regression_q.dta", clear
+mmerge cid date_q using "`temp_folder'/imf_bop_lmns_regression_ipolate.dta", update
 
 * Total
 
@@ -186,10 +193,10 @@ foreach x of varlist F* {
 	local f=subinstr("`x'","F","f",.)
 	replace `f'=`x'/L.`Q'
 }
-save "${DATA}/temp/imf_bop_lmns_regression_q_ipolate.dta", replace
+save "`temp_folder'/imf_bop_lmns_regression_q_ipolate.dta", replace
 
 
-use "${DATA}/temp/imf_bop_lmns_regression_q_ipolate.dta", clear
+use "`temp_folder'/imf_bop_lmns_regression_q_ipolate.dta", clear
 replace Q_Z_x_Om_i_ni=. if Q_Z_x_Om_i_ni<0
 replace Q_Z_x_Om_ni_i=. if Q_Z_x_Om_ni_i<0
 
@@ -223,4 +230,4 @@ rename f_Z_x_Om_i_ni total_outflows
 
 drop *_i_ni _merge
 
-save "${DATA}/temp/grcf_capital_flows.dta", replace
+save "`output_file'", replace

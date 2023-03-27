@@ -1,8 +1,10 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
 
-def import_worldbank_gdp(input_file: str, output_file: str) -> None:
+def import_worldbank_gdp(input_file: Path, output_file: Path) -> None:
     print('Import World GDP...')
     # Import world gdp
     gdp_df = pd.read_csv(input_file)
@@ -103,4 +105,3 @@ def import_worldbank_gdp(input_file: str, output_file: str) -> None:
     gdp_df.reset_index().to_csv(
         output_file, index=False
     )
-    return None

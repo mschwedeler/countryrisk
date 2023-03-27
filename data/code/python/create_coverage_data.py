@@ -1,7 +1,9 @@
+from pathlib import Path
+
 import pandas as pd
 
 
-def import_our_sample(input_file: str, output_file: str) -> None:
+def import_our_sample(input_file: Path, output_file: Path) -> None:
     print('Creating firm-year file of our sample...')
     scores = pd.read_stata(
         input_file,
@@ -22,14 +24,13 @@ def import_our_sample(input_file: str, output_file: str) -> None:
         our_countries=lambda v: v['loc_cname'].isin(our_countries)
     )
     collapsed.to_pickle(output_file)
-    return None
 
 
 def create_coverage_data(
-    compustat_file: str,
-    iso2toname_file: str,
-    iso2toiso3_file: str,
-    oursample_file: str,
+    compustat_file: Path,
+    iso2toname_file: Path,
+    iso2toiso3_file: Path,
+    oursample_file: Path,
     output_file: str
 ) -> None:
     print('Creating coverage data set...')

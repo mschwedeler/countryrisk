@@ -5,9 +5,6 @@
   country, so the variable crisis_id runs from 1 to 4. If a crisis spans
   multiple consecutive quarters within a country, they get the same integer.
 *******************************************************************************/
-	
-
-import delimited "${DATA}/temp/crises.csv", clear varnames(1)
 
 
 * Quarterly

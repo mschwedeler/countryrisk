@@ -4,9 +4,9 @@
 *                               Prepare cfnaiQ.dta                             *  
 ********************************************************************************
 
+args input_file output_file
 
-import excel "${RAW_DATA}/cfnai/cfnai-realtime-3-xlsx.xlsx", ///
-	sheet("cfnai_realtime") firstrow case(lower) clear
+import excel "`input_file'", sheet("cfnai_realtime") firstrow case(lower) clear
 
 	
 * Keep most recent iteration
@@ -23,4 +23,4 @@ ren cf122019 cfnai
 * Save
 compress
 sort dateQ
-save "${DATA}/temp/cfnaiQ.dta", replace
+save "`output_file'", replace

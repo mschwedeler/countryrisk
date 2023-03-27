@@ -1,9 +1,10 @@
 ********************************************************************************
 *                              Import Firm Risk                                *
 ********************************************************************************
+args input_file output_file
 
 
-import delimited "${RAW_DATA}/firm_risk/firmquarter_2022q1.csv", clear
+import delimited "`input_file'", clear
 
 
 * Collapse to firm-quarter units
@@ -69,4 +70,4 @@ keep country_iso2 dateQ firmrisk_5plus
 sort country_iso2 dateQ
 order country_iso2 dateQ
 compress
-save "${DATA}/temp/firmrisk.dta", replace
+save "`output_file'", replace

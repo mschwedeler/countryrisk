@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import Iterable
+
 import pandas as pd
 
 
@@ -47,19 +50,23 @@ def create_marketcap(stock_data: pd.DataFrame, only_exclude_adr: bool=False) -> 
     return marketcap
 
 
-def import_compustat_marketcap(input_folder: str) -> pd.DataFrame:
+def import_compustat_marketcap(input_files: Iterable[Path]) -> pd.DataFrame:
     all_files = []
     for year in range(2002, 2021):
         print(f'Importing market cap for year {year}...')
         # load
         g_marketcap = create_marketcap(
             pd.read_pickle(
-                f'{input_folder}/global/g_secd_dec{year}_marketcap.pkl'
+                [x for x in input_files if x.match(
+                    f'*/g_secd_dec{year}_marketcap.pkl'
+                )][0]
             )
         )
         na_marketcap = create_marketcap(
             pd.read_pickle(
-                f'{input_folder}/na/na_secd_dec{year}_marketcap.pkl'
+                [x for x in input_files if x.match(
+                    f'*/na/na_secd_dec{year}_marketcap.pkl'
+                )][0]
             )
         )
         # combine (Compustat NA takes precedence)
@@ -76,28 +83,15 @@ def import_compustat_marketcap(input_folder: str) -> pd.DataFrame:
     return pd.concat(all_files).drop_duplicates()
 
 
-def import_compustat_names(input_folder: str) -> pd.DataFrame:
-    # global names file
-    g_names = pd.read_pickle(f'{input_folder}/global/g_names.pkl')
-    # na names file
-    na_names = pd.read_pickle(f'{input_folder}/na/na_names.pkl')
-    # combine
-    names = pd.concat(
-        [
-            na_names[['gvkey','conm','sic']],
-            g_names[['gvkey','conm','sic']]
-        ], axis=0
-    ).drop_duplicates(subset=['gvkey'])
-    # if row in both, value for first value (North America) is kept
-    assert names['gvkey'].unique().shape[0] == names.shape[0]
-    return names
-
-
-def import_compustat_company(input_folder: str) -> pd.DataFrame:
+def import_compustat_company(input_files: Iterable[Path]) -> pd.DataFrame:
     # global company file
-    g_company = pd.read_pickle(f'{input_folder}/global/g_company.pkl')
+    g_company = pd.read_pickle(
+        [x for x in input_files if x.match('global/g_company.pkl')][0]
+    )
     # na company file
-    na_company = pd.read_pickle(f'{input_folder}/na/na_company.pkl')
+    na_company = pd.read_pickle(
+        [x for x in input_files if x.match('na/na_company.pkl')][0]
+    )
     # combine
     company = pd.concat(
         [
@@ -136,18 +130,17 @@ def merge_compustat(
     return merged
 
 
-def import_compustat(input_folder: str, output_folder: str) -> None:
-    # Files
+def import_compustat(input_files: Iterable[Path], output_folder: str) -> None:
+    # Output files
     marketcap_file = f'{output_folder}/compustat_marketcap.pkl'
     company_file = f'{output_folder}/compustat_company.pkl'
     compustat_file = f'{output_folder}/compustat_merged.pkl'
     # Import Compustat market capitalization
-    marketcap = import_compustat_marketcap(input_folder)
+    marketcap = import_compustat_marketcap(input_files)
     marketcap.to_pickle(marketcap_file)
     # Import Compustat SIC sectors
-    names = import_compustat_company(input_folder)
+    names = import_compustat_company(input_files)
     names.to_pickle(company_file)
     # Merge (and remove ETFs)
     merged = merge_compustat(marketcap_file, company_file)
     merged.to_pickle(compustat_file)
-    return None

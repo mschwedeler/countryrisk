@@ -3,9 +3,10 @@
 *                                                                              *
 *                             Prepare msci_returnsQ.dta                        *  
 ********************************************************************************
+args input_file output_file temp_folder
 
 
-import delimited using "${RAW_DATA}/msci_returns/msci_updated20201222.csv", clear
+import delimited using "`input_file'", clear
 
 gen dateD = date(date, "YMD")
 format dateD %td
@@ -23,7 +24,7 @@ drop return_gross
 preserve
 	
 	// Generate business day
-	bcal create "${DATA}/temp/msci", from(dateD) replace generate(dateB)
+	bcal create "`temp_folder'/msci", from(dateD) replace generate(dateB)
 	format dateB %tbmsci
 	
 	// Xtset data
@@ -89,4 +90,4 @@ compress
 sort country_iso2 dateQ
 order country_iso2 dateQ
 
-save "${DATA}/temp/msci_returnsQ.dta", replace
+save "`output_file'", replace

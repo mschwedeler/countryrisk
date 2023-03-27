@@ -3,14 +3,16 @@
 *                                                                              *
 *                     Prepare transmissionrisk_OriginFirmTau.dta               *  
 ********************************************************************************
+args temp_folder output_file crises_integers_do
 
-use "${DATA}/temp/transmissionrisk_FirmCountryQuarter.dta", clear
+use "`temp_folder'/transmissionrisk_FirmCountryQuarter.dta", clear
 
 
 **  Merge in crises
 tempfile parent_data
 save "`parent_data'", replace
-do "${DATA}/code/crises_integers.do"
+import delimited "`temp_folder'/crises.csv", clear varnames(1)
+do "`crises_integers_do'"
 merge 1:m country_iso2 dateQ using "`parent_data'"
 drop _merge
 
@@ -70,4 +72,4 @@ gen financial_indicator = (sic_int >= 6000 & sic_int < 6800)
 
 
 compress
-save "${DATA}/final/transmissionrisk_OriginFirmTau.dta", replace
+save "`output_file'", replace

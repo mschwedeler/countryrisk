@@ -3,10 +3,11 @@
 *                                                                              *
 *                       Prepare analysis_FirmCountry.dta                       *  
 ********************************************************************************
+args input_file output_file temp_folder
 
 
 *** Start with data at firm-country-quarter level
-use "${RAW_DATA}/refinitiv/scores.dta", clear
+use "`input_file'", clear
 drop if yofd(dofq(dateQ)) > 2019
 
 
@@ -16,10 +17,10 @@ collapse (mean) exposure risk sentiment (first) company_name loc_iso2, by(gvkey 
 
 * Add countryname for country of score
 ren country_iso2 iso2
-merge m:1 iso2 using "${DATA}/temp/iso2_names.dta"
+merge m:1 iso2 using "`temp_folder'/iso2_names.dta"
 drop if _merge == 2
 drop _merge
-merge m:1 iso2 using "${DATA}/temp/iso2_iso3.dta"
+merge m:1 iso2 using "`temp_folder'/iso2_iso3.dta"
 drop if _merge == 2
 drop _merge
 ren iso2 country_iso2
@@ -28,13 +29,13 @@ ren iso3 country_iso3
 
 * Add updated ORBIS
 sort gvkey country_iso2
-merge 1:1 gvkey country_iso2 using "${DATA}/temp/orbis.dta", sorted
+merge 1:1 gvkey country_iso2 using "`temp_folder'/orbis.dta", sorted
 drop if _merge == 2
 drop _merge
 
 
 * Add Worldscope
-merge 1:1 gvkey country_iso3 using "${DATA}/temp/worldscope_FirmCountry.dta"
+merge 1:1 gvkey country_iso3 using "`temp_folder'/worldscope_FirmCountry.dta"
 drop if _merge == 2
 drop _merge
 
@@ -42,7 +43,7 @@ drop _merge
 * Add countryname for hq
 ren loc_iso2 iso2
 ren country_name c
-merge m:1 iso2 using "${DATA}/temp/iso2_names.dta"
+merge m:1 iso2 using "`temp_folder'/iso2_names.dta"
 drop if _merge == 2
 drop _merge
 ren country_name loc_cname
@@ -74,4 +75,4 @@ egen firm_id = group(gvkey)
 sort gvkey country_iso2
 order gvkey country_iso2
 compress
-save "${DATA}/final/analysis_FirmCountry.dta", replace
+save "`output_file'", replace

@@ -1,16 +1,17 @@
 ********************************************************************************
 *                                  Define Crises                               *  
 ********************************************************************************
+args input_file iso2_to_names_file crisis_variables_do output_file
 
 
-use "${RAW_DATA}/refinitiv/scores.dta", clear
+use "`input_file'", clear
 
 gcollapse (mean) risk, by(country_iso2 dateQ)
 		
 *Add country names
 
 ren country_iso2 iso2
-merge m:1 iso2 using "${DATA}/temp/iso2_names.dta"
+merge m:1 iso2 using "`iso2_to_names_file'"
 drop if _merge == 2
 drop _merge
 ren iso2 country_iso2
@@ -23,7 +24,7 @@ egen country_id = group(country_iso2) // needed for running crises_variables.do
 tempfile parent_data
 save "`parent_data'", replace
 
-do "${DATA}/code/crises_variables.do"
+do "`crisis_variables_do'"
 // note that risk_resid is normalized to have sd=2, so next line is legal
 scalar sd_global = 2
 
@@ -34,7 +35,7 @@ drop _merge
 * Prepare data file that will save crises for later use
 
 capture file close saving_file
-file open saving_file using "${DATA}/temp/crises.csv", write replace
+file open saving_file using "`output_file'", write replace
 file write saving_file "country_iso2,dateQ,nolocal" _n
 
 
