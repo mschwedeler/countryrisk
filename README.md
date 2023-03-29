@@ -93,6 +93,7 @@ Compustat Global | global_company.pkl, global_names.csv, global_secd_decXXXX_mar
 Compustat North America | na_company.pkl, na_names.csv, na_secd_decXXXX_marketcap.pkl | raw/compustat/na | No | [S&P Market Intelligence](#compustat) | February 2023
 Country.io | iso3.json, names.json | raw/country_identifiers | Yes | [Country.io](#countryio) | July 2019
 Economist Intelligence Unit | Country Commerce Reports 2002-2019 for the largest 45 economies | raw/eiu | No | [Economist Intelligence Unit](#eiu) | January 2020
+Economic Policy Uncertainty Index | All_Country_Data.xlsx | raw/epu_national | Yes | [Baker et al. (2016)](#bakeretal2016)
 Firm Risk | firmquarter_2022q1.csv | raw/firm_risk | Yes | [Hassan et al. (2019)](#hassanetal2019) | February 2023
 IHS Markit | ZBCJBOFJ843QUMYB.dta | raw/markit_cds | No | [IHS Markit](#ihsmarkit) | July 2019
 IMF Balance of Payments Statistics (BOPS) | BOP_02-21-2021 20-53-42-00_timeSeries | raw/imf_capitalflows | Yes | [IMF BOPS](#imfbops) | February 2021
@@ -126,6 +127,10 @@ The paper uses data provided by [Country.io](#countryio2019) to consistently mov
 ## Economist Intelligence Unit
 
 The paper uses the Country Commerce Reports from the [Economist Intelligence Unit](#eiu). This is a commercial data set that can be purchased directly from the Economist Intelligence Unit. Some university libraries also have access to these reports. We last accessed the data in January 2020.
+
+## Economic Policy Uncertainty Index
+
+The paper uses the quarterly country-level newspaper-based Economic Policy Uncertainty Index developed by [Baker et al. (2016)](#bakeretal2016). The data is freely available from [https://www.policyuncertainty.com/all_country_data.html](#https://www.policyuncertainty.com/all_country_data.html). We last downloaded the data in March 2021.
 
 ## Firm Risk
 
@@ -184,6 +189,8 @@ We gratefully acknowledge Thomas Rauter, whose prior work [(Rauter, 2020)](#raut
 # References
 
 <a id="ahir2021">[Ahir et al., 2022]</a> Hites Ahir, Nicholas Bloom, Davide Furceri, World Unicertainty Index, NBER Working Paper [29763](https://www.nber.org/papers/w29763), February 2022.
+
+<a id="bakeretal2016">[Baker et al., 2016]</a> Scott R. Baker, Nicholas Bloom, Steven Davis, Measuring Economic Policy Uncertainty, The Quarterly Journal of Economics, Volume 131, Issue 4, November 2016, Pages 1593-1636, [https://doi.org/10.1093/qje/qjw024](https://doi.org/10.1093/qje/qjw024)
 
 <a id="bvdorbis">[BvD Orbis]</a> Bureau van Dijk, Orbis, retrieved from the NBER Orbis group; [https://www.nber.org/research/data/orbis](https://www.nber.org/research/data/orbis), early 2021.
 
