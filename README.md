@@ -6,7 +6,7 @@ This repository replicates the 10 tables and 8 figures in [Hassan et al. (2023)]
 
 To run either code, the replicator should ensure that all necessary programs and modules are installed; see the [how to run](#how-to-run-the-replication) section below.
 
-The replicator should expect the `data/make.py` to run in no more than 30 minutes, wheras the `analysis/make.py` should take less than five minutes. This is with a 2021 MacBook Pro.
+The replicator should expect the `data/make.py` to run in about 30 minutes, wheras the `analysis/make.py` should take less than five minutes. This is with a 2021 MacBook Pro.
 
 # How to run the replication
 
