@@ -104,14 +104,21 @@ if __name__ == '__main__':
             shutil.rmtree(OUTPUT_FOLDER.joinpath('figures'), ignore_errors=True)
         if OUTPUT_FOLDER.joinpath('tables').exists():
             shutil.rmtree(OUTPUT_FOLDER.joinpath('tables'), ignore_errors=True)
+        if OUTPUT_FOLDER.joinpath('../logs').exists():
+            shutil.rmtree(OUTPUT_FOLDER.joinpath('../logs'), ignore_errors=True)
     if not OUTPUT_FOLDER.joinpath('figures').exists():
         OUTPUT_FOLDER.joinpath('figures').mkdir()
     if not OUTPUT_FOLDER.joinpath('tables').exists():
         OUTPUT_FOLDER.joinpath('tables').mkdir()
+    if not OUTPUT_FOLDER.joinpath('../logs').exists():
+        OUTPUT_FOLDER.joinpath('../logs').mkdir()
 
     # Check that required files exist
     check_files_exist(final_data)
     print('All final data files exist')
+
+    # Change folder so that Stata logs end up in the correct folder
+    os.chdir(ROOT.joinpath('analysis/logs'))
     
     # Figure 1
     print('Figure 1...')
@@ -175,7 +182,6 @@ if __name__ == '__main__':
 
     # Figure 5
     print('Figure 5...')
-    # Plot and save
     subprocess.run(
         [
             config_dict['general']['stata_exec'],
@@ -200,7 +206,8 @@ if __name__ == '__main__':
             f'\"{ROOT}/analysis/code/stata/figure6.do\"',
             final_data['COUNTRYQUARTER_FILE'],
             f'{OUTPUT_FOLDER}/figures/Figure6_crises_XX.eps',
-            f'{DATA}'
+            f'{DATA}',
+            "1" # put =0 if you want to include Appendix Figure 4
         ],
         check=False
     )

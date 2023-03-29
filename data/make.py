@@ -75,7 +75,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Processes all raw data to create analysis data sets.'
     )
-    parser.add_argument('--clean_slate', action='store_true', default=False)
+    parser.add_argument('--clean_slate', action='store_true', default=True)
     args = parser.parse_args()
 
     # Replace existing output folder with empty folder
@@ -85,10 +85,14 @@ if __name__ == '__main__':
             shutil.rmtree(DATA.joinpath('final'), ignore_errors=True)
         if DATA.joinpath('temp').exists():
             shutil.rmtree(DATA.joinpath('temp'), ignore_errors=True)
+        if DATA.joinpath('logs').exists():
+            shutil.rmtree(DATA.joinpath('logs'), ignore_errors=True)
     if not DATA.joinpath('final').exists():
         DATA.joinpath('final').mkdir()
     if not DATA.joinpath('temp').exists():
         DATA.joinpath('temp').mkdir()
+    if not DATA.joinpath('logs').exists():
+        DATA.joinpath('logs').mkdir()
 
     # load config yaml
     with CONFIG_FILE.open('r', encoding='utf-8') as stream:
@@ -100,6 +104,8 @@ if __name__ == '__main__':
         final_data = prepend_files(config_dict['final_data'], DATA)
         raw_data = prepend_files(config_dict['raw_data'], RAW_DATA)
 
+    # Change folder so that Stata logs end up in the correct folder
+    os.chdir(DATA.joinpath('logs'))
 
     # Import country identifiers
     import_countryidentifiers(

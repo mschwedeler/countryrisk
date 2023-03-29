@@ -1,4 +1,4 @@
-args input_file output_file data_folder
+args input_file output_file data_folder no_appendix
 
 set scheme plotplain
 
@@ -27,7 +27,9 @@ drop _merge
 local colist1 `""China", "Turkey", "Greece", "United States", "Brazil", "United Kingdom""'
 local colist2 `""Russia", "Ireland", "Spain", "Thailand", "Egypt", "Hong Kong", "Japan""'
 local colist3 `""Italy", "Iran", "Mexico", "Nigeria", "Norway", "Poland", "Venezuela""'
-keep if inlist(country_name, `colist1') | inlist(country_name,`colist2') | inlist(country_name,`colist3')
+if `no_appendix' == 1 {
+	keep if inlist(country_name, `colist1') | inlist(country_name,`colist2') | inlist(country_name,`colist3')
+}
   
 levelsof rankNumber, local(levels)
 
@@ -70,7 +72,14 @@ foreach i of local levels {
 		legend(off) ///
 		xsize(8) ysize(4) xlabel(168(16)240, nogrid format(%tqCCYY)) ///
 		ylabel(-4(2)4, nogrid) scale(4) xtitle("") title("`cname'") ytitle("")
-		
-	graph export `= subinstr("`output_file'", "XX", "`ciso2'", .)', as(eps) replace 
+	
+	if inlist("`cname'", `colist1') | inlist("`cname'", `colist2') | inlist("`cname'", `colist3') {
+		local filename `= subinstr("`output_file'", "XX", "`ciso2'", .)'
+	}
+	else {
+		local modified `=subinstr("`output_file'", "Figure6", "AppendixFigure4", .)'
+		local filename `= subinstr("`modified'", "XX", "`ciso2'", .)'
+	}
+	graph export `filename', as(eps) replace 
 }
 }

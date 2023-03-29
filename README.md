@@ -6,7 +6,7 @@ This repository replicates the 10 tables and 8 figures in [Hassan et al. (2023)]
 
 To run either code, the replicator should ensure that all necessary programs and modules are installed; see the [how to run](#how-to-run-the-replication) section below.
 
-The replicator should expect the code to run for about 50 minutes.
+The replicator should expect the `data/make.py` to run in no more than 30 minutes, wheras the `analysis/make.py` should take less than five minutes. This is with a 2021 MacBook Pro.
 
 # How to run the replication
 
@@ -14,7 +14,7 @@ The replicator should expect the code to run for about 50 minutes.
 
 To run the replication, you need to have Stata installed and available in your path environment, and a Python virtual environment with the config/requirements.txt installed.
 
-The code was tested with Stata 14.2, Python 3.9.13, and the Python modules specified in `config/requirements.txt`.
+The code was tested on MacOS 12.6.3 with Stata 14.2, Python 3.9.13, and the Python modules specified in `config/requirements.txt`.
 
 ## Preparation
 
@@ -23,33 +23,38 @@ The code was tested with Stata 14.2, Python 3.9.13, and the Python modules speci
     - Make sure the following community-contributed Stata packages are installed: `mmerge, estout, blindschemes, reghdfe`.
     - Test whether Stata is available via the command line. To do so, open a terminal and type `stata` (or `stata-mp`, depending on the flavor you have installed). This should open Stata in the command line; if it doesn't please check whether the command is in your path environment. 
 
-2) Install Python 3.9. Then go to the replication folder, create a virtual environment, and install the `config/requirements.txt`:
+2) Create a virtual environment with Python 3.9 and install the `config/requirements.txt`. One way to do this:
     ```shell
-    cd Replication # change to the replication folder
+    # be sure that you are in the replication folder
     python -m venv .venv # installs virtual environment in ./.venv
     source .venv/bin/activate # activates virtual environment
-    python -m pip install -r requirements/requirements.txt # installs all modules
+    python -m pip install -r config/requirements.txt # installs all modules
     ```
-    (Optional:) You can also manually compile the the requirements/requirements.txt from the requirements/requirements.in with the `pip-tools` module, and sync all packages in the virtual environment with pip-sync.
+    (Optional:) You can also manually compile the the config/requirements.txt from the config/requirements.in with the `pip-tools` module, and sync all packages in the virtual environment with pip-sync.
     ```shell
-    cd Replication
     source .ven/bin/activate
     python -m pip install pip-tools # install pip-tools
-    pip-compile --generate-hashes config/requirements/requirements.in
-    pip-sync config/requirements/requirements.txt
+    pip-compile --generate-hashes config/requirements.in
+    pip-sync config/requirements.txt
     ```
+    Note that you do not need the `eikon` and `wrds` modules for running either `data/make.py` or `analysis/make.py`. They are used for downloading the raw data.
 
-3) Edit the config.yaml file in the root directory of this replication folder:
+3) Edit line 2 of the config.yaml file in the root directory of this replication folder by adding the command that calls Stata from the command line.
 
+4) Make sure that you have all the `raw_data` files that the config.yaml expects. If necessary, adjust the path or file name in config.yaml.
 
+5) Run the code that creates the final data sets. Open your shell, navigate to the replication directory, and then run the data manipulation codes. This will create all data sets necessary to produce the tables and figures:
+    ```shell
+    source .venv/bin/activate
+    python data/make.py
+    ```
+6) Run the code that creates the tables and figures. Open your shell, navigate to the replication directory, and run
+    ```shell
+    source .venv/bin/activate
+    python analysis/make.py
+    ```
+7) (Optional) Compile the `analysis/output/tables_figures.tex` with your favorite tex editor.
 
-Software used, including version number as used. If the code is expected to run with a lower version number, that should be added.
-Any additional packages, including their version number or similar, as used.
-The computer hardware specification as used by the author, in terms of OS, CPU generation and quantity, memory and necessary disk space. If multiple computers were used, the specification for each should be identified.
-
-## Memory and runtime requirements
-
-TODO
 
 # List of Figures and Tables
 

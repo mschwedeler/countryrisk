@@ -136,13 +136,14 @@ ren iso2 country_iso2
 * Add IMF capital flows (broken down by type) data
 preserve
     use "`temp_folder'/grcf_capital_flows.dta", clear
-    keep iso_country_code date_q  *_outflows *_inflows total_net
+    keep iso_country_code date_q  *_outflows *_inflows total_net total_inflows_exFDI
     foreach x in total portfolio_debt portfolio_equity portfolio_total ///
         fdi_debt fdi_equity fdi_total other_loans {
         replace `x'_outflows = `x'_outflows*100
         replace `x'_inflows = `x'_inflows*100
     }
     replace total_net = total_net * 100
+    replace total_inflows_exFDI = total_inflows_exFDI * 100
     drop if iso_country_code == "" | date_q == .
     ren iso_country_code country_iso3
     ren date_q dateQ
