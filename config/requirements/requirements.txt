@@ -8,10 +8,6 @@ anyio==3.6.2
     # via httpcore
 appdirs==1.4.4
     # via eikon
-appnope==0.1.4
-    # via
-    #   ipykernel
-    #   ipython
 asttokens==2.2.1
     # via stack-data
 backcall==0.2.0
@@ -41,11 +37,13 @@ decorator==5.1.1
 deprecation==2.1.0
     # via eikon
 eikon==1.1.16
-    # via -r config/requirements/requirements.in
+    # via -r requirements.in
 executing==1.2.0
     # via stack-data
-fonttools==4.38.0
+fonttools==4.43.0
     # via matplotlib
+greenlet==3.0.3
+    # via sqlalchemy
 h11==0.14.0
     # via httpcore
 h2==3.2.0
@@ -69,7 +67,7 @@ importlib-metadata==7.1.0
 importlib-resources==6.4.0
     # via matplotlib
 ipykernel==6.20.2
-    # via -r config/requirements/requirements.in
+    # via -r requirements.in
 ipython==8.9.0
     # via ipykernel
 jedi==0.18.2
@@ -81,7 +79,7 @@ jupyter-core==5.2.0
 kiwisolver==1.4.4
     # via matplotlib
 matplotlib==3.8.4
-    # via -r config/requirements/requirements.in
+    # via -r requirements.in
 matplotlib-inline==0.1.6
     # via
     #   ipykernel
@@ -94,7 +92,7 @@ nest-asyncio==1.5.6
     #   ipykernel
 numpy==1.24.1
     # via
-    #   -r config/requirements/requirements.in
+    #   -r requirements.in
     #   contourpy
     #   eikon
     #   matplotlib
@@ -111,7 +109,7 @@ packaging==23.0
     #   statsmodels
 pandas==1.5.3
     # via
-    #   -r config/requirements/requirements.in
+    #   -r requirements.in
     #   eikon
     #   statsmodels
     #   wrds
@@ -125,7 +123,7 @@ pickleshare==0.7.5
     # via ipython
 pillow==10.3.0
     # via
-    #   -r config/requirements/requirements.in
+    #   -r requirements.in
     #   matplotlib
 platformdirs==2.6.2
     # via jupyter-core
@@ -154,7 +152,7 @@ pytz==2022.7.1
     #   datetime
     #   pandas
 pyyaml==6.0
-    # via -r config/requirements/requirements.in
+    # via -r requirements.in
 pyzmq==25.0.0
     # via
     #   ipykernel
@@ -179,12 +177,12 @@ sniffio==1.3.0
     #   httpx
 sqlalchemy==1.4.46
     # via
-    #   -r config/requirements/requirements.in
+    #   -r requirements.in
     #   wrds
 stack-data==0.6.2
     # via ipython
 statsmodels==0.13.5
-    # via -r config/requirements/requirements.in
+    # via -r requirements.in
 tornado==6.2
     # via
     #   ipykernel
@@ -204,7 +202,7 @@ wcwidth==0.2.6
 websocket-client==1.5.0
     # via eikon
 wrds==3.1.2
-    # via -r config/requirements/requirements.in
+    # via -r requirements.in
 zipp==3.18.1
     # via
     #   importlib-metadata
