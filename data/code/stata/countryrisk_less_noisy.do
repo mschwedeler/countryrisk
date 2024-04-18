@@ -7,7 +7,7 @@ args input_file output_file
 
 use "`input_file'", clear
 
-keep gvkey country_iso2 country_name dateQ loc_iso2 sic risk exposure ric company_name
+keep gvkey country_iso2 country_name dateQ loc_iso2 sic risk exposure company_name
 
 
 ** Create CountryRisk_less_noisy = Exposure_ict * tilde(CountryRisk_ct)
