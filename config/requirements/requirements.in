@@ -1,8 +1,9 @@
 eikon
 ipykernel
-matplotlib
+matplotlib>=3.8
 numpy
 pandas
+Pillow>=10.3.0 # needed for ipykernel; version specified to fix security vulnerability
 pyyaml
 sqlalchemy<2 # otherwise wrds breaks
 statsmodels
