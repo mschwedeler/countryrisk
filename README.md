@@ -34,14 +34,14 @@ The code was tested on MacOS 12.6.3 with Stata 14.2, Python 3.9.13, and the Pyth
     ```shell
     source .ven/bin/activate
     python -m pip install pip-tools # install pip-tools
-    pip-compile --generate-hashes config/requirements.in
-    pip-sync config/requirements.txt
+    pip-compile --generate-hashes config/requirements/requirements.in
+    pip-sync config/requirements/requirements.txt
     ```
     Note that you do not need the `eikon` and `wrds` modules for running either `data/make.py` or `analysis/make.py`. They are used for downloading the raw data.
 
 3) Edit line 2 of the config.yaml file in the root directory of this replication folder by adding the command that calls Stata from the command line.
 
-4) Make sure that you have all the `raw_data` files that the config.yaml expects. If necessary, adjust the path or file name in config.yaml.
+4) Create a `raw/` folder in the root of this replication folder. Make sure that you have all the `raw/` files that the config.yaml expects. If necessary, adjust the path or file name in config.yaml.
 
 5) Run the code that creates the final data sets. Open your shell, navigate to the replication directory, and then run the data manipulation codes. This will create all data sets necessary to produce the tables and figures:
     ```shell
